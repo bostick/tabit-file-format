@@ -1,16 +1,19 @@
 
-# The .tbt TabIt file format
+# Description of the .tbt TabIt file format
+
 
 
 ## Overview
 
-This document describes the format for .tbt files that are opened and saved by TabIt, a Windows application described in its website [^1] as
+This document describes the format for .tbt files that are opened and saved by TabIt, a Windows application that is described in its website [^1] as
 
 > a full-featured program for creating, playing, and printing guitar, bass, or banjo tablature.
 
-The format description was reverse-engineered and this document is not an official specification.
+TabIt is effectively abandonware.
 
 The latest version of TabIt, version 2.03, was released in 2006 and was used as a reference for the reverse-engineering work.
+
+The format description was reverse-engineered and this document is not an official specification.
 
 Any deviations in this document from how TabIt actually works are errors in this document and should be brought to the attention of the author.
 
@@ -20,6 +23,102 @@ I am not affiliated with TabIt and I do not own trademark associated with TabIt.
 I am simply a fan who wants to see TabIt live.
 
 Thank you JR.
+
+
+
+
+## Example: Twinkle Twinkle Little Star
+
+Here is a disection of an example file of Twinkle Twinkle Little Star.
+
+![twinkle](twinkle.png)
+
+You can download the .tbt file [here](twinkle.tbt).
+
+The whole file is 143 bytes and looks like this:
+```
+T B T o x . . 1 . 6 . . . . . .     54 42 54 6f 78 01 03 31 2e 36 00 0b 00 00 00 00
+. . . . . . . . . . . . . . . .     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+. . . . . . . . . . . . . . x .     00 00 00 00 00 00 00 00 00 00 c0 00 b8 00 78 00
+. . . . . z y . . . . . . p . .     15 00 00 00 e0 7a 79 15 8f 00 00 00 a2 70 b6 18
+x . c . . I ` . . . . . . . . .     78 da 63 93 96 49 60 00 02 07 09 86 ff 0c d8 00
+. 1 U . . x . . ` . g ` d $ . .     00 31 55 01 f5 78 da 93 60 e0 67 60 64 24 05 87
+2 0 2 0 6 . . q   . c . ? . 7 A     32 30 32 30 36 fb 03 71 20 03 63 83 3f 04 37 41
+q . < . . . . . . . . . " . . .     71 c3 3c a8 1c b2 18 08 fb 01 c5 16 22 b1 d1 d5
+, . # 7 . L . . 1 . . . T % |       2c c0 23 37 8f 4c fb e6 31 00 00 d3 54 25 7c
+```
+
+The first 64 bytes of TabIt files is the header:
+```
+T B T o x . . 1 . 6 . . . . . .     54 42 54 6f 78 01 03 31 2e 36 00 0b 00 00 00 00
+. . . . . . . . . . . . . . . .     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+. . . . . . . . . . . . . . x .     00 00 00 00 00 00 00 00 00 00 c0 00 b8 00 78 00
+. . . . . z y . . . . . . p . .     15 00 00 00 e0 7a 79 15 8f 00 00 00 a2 70 b6 18
+```
+
+Then the metadata, which is a zlib stream:
+```
+x . c . . I ` . . . . . . . . .     78 da 63 93 96 49 60 00 02 07 09 86 ff 0c d8 00
+. 1 U . .                           00 31 55 01 f5
+```
+
+Then the body, which is also a zlib stream:
+```
+x . . ` . g ` d $ . . 2 0 2 0 6     78 da 93 60 e0 67 60 64 24 05 87 32 30 32 30 36
+. . q   . c . ? . 7 A q . < . .     fb 03 71 20 03 63 83 3f 04 37 41 71 c3 3c a8 1c  
+. . . . . . . " . . . , . # 7 .     b2 18 08 fb 01 c5 16 22 b1 d1 d5 2c c0 23 37 8f
+L . . 1 . . . T % |                 4c fb e6 31 00 00 d3 54 25 7c
+```
+
+After inflating, the uncompressed metadata looks like this:
+```
+. . . ` . . . . @ . . . . . . .     06  1b  1c  60  00  00  00  00  40  18  00  ff  00  00  00  00
+. . . . . . . . . . . . . . . .     00  00  00  00  00  00  00  00  00  00  00  00  00  00  00  00
+.                                   00
+```
+
+And after inflating, the uncompressed body looks like this:
+```
+. . . . . . . . . . . . . . . .     18  00  0f  00  01  01  0f  00  01  01  0f  00  01  01  0f  00
+. . . . . . . . . . . . . . . .     01  01  0f  00  01  01  0f  00  01  01  0f  00  01  01  0f  00
+. . . . . . . . . . . . . . . .     01  01  0f  00  01  01  0f  00  01  01  0f  00  01  01  0f  00
+. . U . . . . . O . . . Q . . .     01  01  55  00  01  00  01  83  4f  00  01  83  51  00  01  80
+O . . . O . . . O . . . O . . .     4f  00  01  80  4f  00  01  82  4f  00  01  82  4f  00  01  80
+. . . . O . . . O . . . O . . .     9e  00  01  83  4f  00  01  83  4f  00  01  82  4f  00  01  82
+O . . . O . . . N . . . . . . .     4f  00  01  80  4f  00  01  80  4e  00  01  83  a1  00  01  80
+O . . . N . . . O . . . O . . .     4f  00  01  80  4e  00  01  83  4f  00  01  83  4f  00  01  82
+O . . . O . . . . . . . O . . .     4f  00  01  82  4f  00  01  80  a0  00  01  80  4f  00  01  80
+N . . . O . . . O . . . O . . .     4e  00  01  83  4f  00  01  83  4f  00  01  82  4f  00  01  82
+O . . . . . . . O . . . Q . . .     4f  00  01  80  9e  00  01  83  4f  00  01  83  51  00  01  80
+O . . . O . . . O . . . O . . .     4f  00  01  80  4f  00  01  82  4f  00  01  82  4f  00  01  80
+. . . . O . . . O . . . O . . .     9e  00  01  83  4f  00  01  83  4f  00  01  82  4f  00  01  82
+O . . . O . . . N . . . . .         4f  00  01  80  4f  00  01  80  4e  00  01  83  9e  00
+```
+
+The uncompressed body has 2 sections.
+
+This is the bars section of the body:
+```
+. . . . . . . . . . . . . . . .     18  00  0f  00  01  01  0f  00  01  01  0f  00  01  01  0f  00
+. . . . . . . . . . . . . . . .     01  01  0f  00  01  01  0f  00  01  01  0f  00  01  01  0f  00
+. . . . . . . . . . . . . . . .     01  01  0f  00  01  01  0f  00  01  01  0f  00  01  01  0f  00
+. .                                 01  01
+```
+
+And this is the notes section of the body:
+```
+U . . . . . O . . . Q . . . O .     55  00  01  00  01  83  4f  00  01  83  51  00  01  80  4f  00
+. . O . . . O . . . O . . . . .     01  80  4f  00  01  82  4f  00  01  82  4f  00  01  80  9e  00
+. . O . . . O . . . O . . . O .     01  83  4f  00  01  83  4f  00  01  82  4f  00  01  82  4f  00
+. . O . . . N . . . . . . . O .     01  80  4f  00  01  80  4e  00  01  83  a1  00  01  80  4f  00
+. . N . . . O . . . O . . . O .     01  80  4e  00  01  83  4f  00  01  83  4f  00  01  82  4f  00
+. . O . . . . . . . O . . . N .     01  82  4f  00  01  80  a0  00  01  80  4f  00  01  80  4e  00
+. . O . . . O . . . O . . . O .     01  83  4f  00  01  83  4f  00  01  82  4f  00  01  82  4f  00
+. . . . . . O . . . Q . . . O .     01  80  9e  00  01  83  4f  00  01  83  51  00  01  80  4f  00
+. . O . . . O . . . O . . . . .     01  80  4f  00  01  82  4f  00  01  82  4f  00  01  80  9e  00
+. . O . . . O . . . O . . . O .     01  83  4f  00  01  83  4f  00  01  82  4f  00  01  82  4f  00
+. . O . . . N . . . . .             01  80  4f  00  01  80  4e  00  01  83  9e  00
+```
 
 
 
@@ -37,7 +136,7 @@ In order to store these in a single space, it is necessary to sub-divide a space
 
 Incrementing through slots is measured in "vsqs" which is short for "viginti-semi-quaver" which means 1/20 of 1/16th note.
 
-E.g., the A string and D string are next to each other and when incrementing from a note on the A string to a note on the D string, the increment is 1 vsq.
+For example, the A string and D string are next to each other and when incrementing from a note on the A string to a note on the D string, the increment is 1 vsq.
 
 In other situations, it is necessary to sub-divide a space into only 2 parts, and these parts are called "dsqs", which is short for "demi-semi-quaver" which means = 1/2 of 1/16th notes.
 
@@ -125,7 +224,7 @@ chunk4s have 4 bytes at the beginning that signify how many bytes to read.
 
 zlib streams are blobs of binary data that must be inflated with zlib. All zlib streams in .tbt files begin with the bytes `0x78 0xda`, which come from zlib and mean that best compression was used.
 
-A plain "list" is a stream of structured data that can be iterated through and may also be indexed.
+An "array list" is a stream of structured data that can be iterated through and may also be indexed.
 
 A "delta list" uses a kind of delta encoding and is iterated through, but cannot be meaningfully indexed.
 
@@ -135,23 +234,99 @@ A "delta list" uses a kind of delta encoding and is iterated through, but cannot
 
 Iterating through delta lists happens a few times in TabIt files.
 
-There are 2 states associated with iterating through delta lists: quiescent and jumping.
+Delta lists use an increment that is delta encoded and a payload.
 
-The iteration starts in the quiescent state.
+Delta lists use a simple scheme for encoding variable-length increments.
 
-The length os the list must be even and each pair of bytes is read together.
+If the first byte read is anything other than `00` then, that byte is the increment.
 
-Each word in the delta list has this structure:
+If the first byte read is `00`, then this means to read the next 2 bytes as a short, and that is the increment.
 
-`s c`
+For example, the bytes `01 83` mean to increment `01` byte and fill-in the skipped bytes with value `83`.
 
-`s` is a byte that specifies how many units to increment after this word, where the specific unit depends on context.
+And the bytes `00 21 01 02` mean to increment 289 (which is the value of `21 01` as a short) and fill-in with the value `02`.
 
-`c` is a byte that specifies what to do at this step, and depends on context.
+The bytes `4f 00` mean to increment `4f` bytes and fill-in with value `00`.
 
-The special value of 0 for `s` means to save the current `c` and transition to the jumping state.
+Here is the delta list for the notes section of the Twinkle example:
+```
+. . . . O . . . Q . . . O . . .     01  00  01  83  4f  00  01  83  51  00  01  80  4f  00  01  80
+O . . . O . . . O . . . . . . .     4f  00  01  82  4f  00  01  82  4f  00  01  80  9e  00  01  83
+O . . . O . . . O . . . O . . .     4f  00  01  83  4f  00  01  82  4f  00  01  82  4f  00  01  80
+O . . . N . . . . . . . O . . .     4f  00  01  80  4e  00  01  83  a1  00  01  80  4f  00  01  80
+N . . . O . . . O . . . O . . .     4e  00  01  83  4f  00  01  83  4f  00  01  82  4f  00  01  82
+O . . . . . . . O . . . N . . .     4f  00  01  80  a0  00  01  80  4f  00  01  80  4e  00  01  83
+O . . . O . . . O . . . O . . .     4f  00  01  83  4f  00  01  82  4f  00  01  82  4f  00  01  80
+. . . . O . . . Q . . . O . . .     9e  00  01  83  4f  00  01  83  51  00  01  80  4f  00  01  80
+O . . . O . . . O . . . . . . .     4f  00  01  82  4f  00  01  82  4f  00  01  80  9e  00  01  83
+O . . . O . . . O . . . O . . .     4f  00  01  83  4f  00  01  82  4f  00  01  82  4f  00  01  80
+O . . . N . . . . .                 4f  00  01  80  4e  00  01  83  9e  00
+```
 
-If in the jumping state, then treat `savedC s` as a short for how many units to increment and treat current `c` as a "default" value for all slots being jumped. Then transition back to quiescent.
+Here is a better visualization of the same bytes:
+```
+. .         01  00
+. . O .     01  83  4f  00
+. . Q .     01  83  51  00
+. . O .     01  80  4f  00
+. . O .     01  80  4f  00
+. . O .     01  82  4f  00
+. . O .     01  82  4f  00
+. . . .     01  80  9e  00
+. . O .     01  83  4f  00
+. . O .     01  83  4f  00
+. . O .     01  82  4f  00
+. . O .     01  82  4f  00
+. . O .     01  80  4f  00
+. . N .     01  80  4e  00
+. . . .     01  83  a1  00
+. . O .     01  80  4f  00
+. . N .     01  80  4e  00
+. . O .     01  83  4f  00
+. . O .     01  83  4f  00
+. . O .     01  82  4f  00
+. . O .     01  82  4f  00
+. . . .     01  80  a0  00
+. . O .     01  80  4f  00
+. . N .     01  80  4e  00
+. . O .     01  83  4f  00
+. . O .     01  83  4f  00
+. . O .     01  82  4f  00
+. . O .     01  82  4f  00
+. . . .     01  80  9e  00
+. . O .     01  83  4f  00
+. . Q .     01  83  51  00
+. . O .     01  80  4f  00
+. . O .     01  80  4f  00
+. . O .     01  82  4f  00
+. . O .     01  82  4f  00
+. . . .     01  80  9e  00
+. . O .     01  83  4f  00
+. . O .     01  83  4f  00
+. . O .     01  82  4f  00
+. . O .     01  82  4f  00
+. . O .     01  80  4f  00
+. . N .     01  80  4e  00
+. . . .     01  83  9e  00
+```
+
+We can step through the process of iterating through this delta list.
+
+To start, `vsqCount = 0`.
+
+Read `01 00`, so `notes[0] = 0x00` and `vsqCount += 0x01 (vsqCount == 1)`.
+
+Read `01 83`, so `notes[1] = 0x83` and `vsqCount += 0x01 (vsqCount == 2)`.
+
+Read `4f 00`, so `notes[2...80] = 0x00` and `vsqCount += 0x4f (vsqCount == 81)`.
+
+Read `01 83`, so `notes[81] = 0x83` and `vsqCount += 0x01 (vsqCount == 82)`.
+
+Read `51 00`, so `notes[82...162] = 0x00` and `vsqCount += 0x51 (vsqCount == 163)`.
+
+And so on.
+
+Delta encoding allows for good compression because of repeated structure in the data.
 
 
 
@@ -159,17 +334,9 @@ If in the jumping state, then treat `savedC s` as a short for how many units to 
 
 The structure of all TabIt files follows this sequence of parts:
 
-1. header
-1. metadata
-1. body
-
-
-And the body has this sequence of parts:
-
-1. bars
-1. notes
-1. alternate time regions (optional)
-1. effect changes (optional)
+1. Header
+1. Metadata
+1. Body
 
 
 
@@ -308,6 +475,8 @@ Use bit mask `0b10000000` to determine dontLetNotesRing.
 Use bit mask `0b01111111` to determine the actual MIDI program number.
 
 `mutedGuitarBlock` is the MIDI program number for muted guitar for each track, stored as a byte.
+mutedGuitarBlock seems to be unused. Older files can have non-default values for muted guitar, but there is no way to edit with the latest version of TabIt.
+
 
 `volumeBlock` is the volume for each track, stored as a byte.
 
@@ -355,7 +524,14 @@ Use bit mask `0b01111111` to determine the actual MIDI program number.
 
 Body is a zlib stream that must be inflated.
 
-Number of bytes in the body stream is the number of remaining bytes in the file.
+Number of bytes in the body stream is the number of remaining bytes in the file, which can be computed from `totalByteCount - 64 - metadataLen`.
+
+The body has this sequence of parts:
+
+1. Bars
+1. Notes
+1. Alternate time regions (optional)
+1. Track effect changes (optional)
 
 
 ### Bars
@@ -368,9 +544,17 @@ else:
   bars = read(chunk2)
 ```
 
+The spaces being processed by bars do not have any knowledge of alternate time regions.
+
+The spaces in bars are as if there are NO alternate time regions.
+
+
+Alternate time regions are specified per-track and are made to match the spaces in bars.
+
+
 #### 0x70 and newer
 
-For version `0x70` and newer, `bars` is a list of 6 byte records with this structure:
+For version `0x70` and newer, `bars` is an array list of 6 byte records with this structure:
 
 `s3 s2 s1 s0 c v`
 
@@ -386,20 +570,17 @@ The bytes `s3 s2 s1 s0` are an int that specifies how many spaces to increment a
 
 And if there is a close repeat at end of bar, then `v` specifies the number of repeats.
 
+The number of spaces in `barsStruct` can be used as the "plain" number of spaces for the song, with no alternate time regions.
 
-### 0x6f and older
+
+
+#### 0x6f and older
 
 For version `0x6f` and older, `bars` is a chunk2.
 
 After reading the chunk2, there is a delta list that is iterated through.
 
-Each word in the delta list has this structure:
-
-`s c`
-
-`s` is a byte that specifies how many spaces to increment after this word.
-
-`c` is a byte that is bit-masked with these values do determine which bar lines to make.
+Each byte in the expanded delta list corresponds to a space and is bit-masked with these values do determine which bar lines to make.
 ```
 0x00001111 = determines which change to make
 0x11110000 = when inserting end repeat, specifies how many repeats
@@ -408,11 +589,17 @@ Each word in the delta list has this structure:
 After bitmasking with `0x00001111`, the value determines which bar lines to make.
 ```
 0 = skip
-1 = insert bar line
+1 = insert single bar line
 2 = insert end repeat
 3 = insert start repeat
 4 = insert double bar line
 ```
+
+Single bar line is inserted between CURRENT and NEXT space.
+
+Open repeat is inserted between PREVIOUS and CURRENT space.
+
+Close repeat is inserted between CURRENT and NEXT space.
 
 It is as if each space has only 1 slot, so no need to compute it.
 
@@ -433,63 +620,79 @@ while True:
 
 After a complete note list is created, then this is a delta list that is iterated through.
 
-Each word in the delta list has this structure:
-
-`s c`
-
-`s` is a byte that specifies how many vsqs to increment after this word.
-
-`c` is a byte that specifies what value to set for the current slot.
+Each byte in the expanded delta list corresponds to a value for the current slot.
 
 The current slot is computed by `vsqCount % 20`.
 
-For slots 0 to 7:
-These are the note values on strings.
-Note values can be between `0x80` and `0xe3` (frets and higher numbers for drums, max value is 99, `0x80` + 99 == `0xe3`)
-And also: `0x11` for mute string and `0x12` for stop string.
+#### Slots 0 to 7
 
-For slots 8 to 15:
-These are effects for each string.
+Note values between `0x80` and `0xe3` correspond to the note values on strings.
+
+For example, value `0x80` in slot 0 means a 0 note on the low E string. A value of `0x85` in slot 1 means a 5 note on the A string.
+
+Drums may have higher numbers than the usual number of frets on guitar strings. The max note is 99, so the highest note value is `0x80` + 99 == `0xe3`.
+
+Besides note values, `0x11` is used for mute string (shown as `x` in TabIt) and `0x12` for stop string (shown as `*` in TabIt).
+
+A muted string plays for a 1/128 note.
+
+
+
+
+#### Slots 8 to 15
+
+These are effects for each string. Slot 8 is the effects for string 0, slot 9 is the effects for string 1, etc.
+
+The effect values:
 ```
-0: skip
-'(': soft
-'/': slide up
-'<': harmonic
-'\\': slide down
-'^': bend up
-'b': bend
-'h': hammer on
-'p': pull off
-'r': release bend
-'s': slap
-'t': tap
-'w': whammy bar bend
-'{': tremolo
-'~': vibrato
+0x00: Skip (no effect)
+0x28 ('('): Soft
+0x2f ('/'): Slide up
+0x3c ('<'): Harmonic
+0x5c ('\'): Slide down
+0x5e ('^'): Bend up
+0x62 ('b'): Bend
+0x68 ('h'): Hammer on
+0x70 ('p'): Pull off
+0x72 ('r'): Release bend
+0x73 ('s'): Slap
+0x74 ('t'): Tap
+0x77 ('w'): Whammy bar bend
+0x7b ('{'): Tremolo
+0x7e ('~'): Vibrato
 ```
 
-For slot 16:
+#### Slot 16
+
 These are track effects.
+
+These are only set when `versionNumber <= 0x70`.
+
 ```
-0: skip
-'C': chorus change
-'D': stroke down
-'I': instrument change
-'P': pan change
-'R': reverb change
-'T': tempo change
-'U': stroke up
-'V': volume change
-'t': tempo change + 250
+0x00: Skip (no effect)
+0x43 ('C'): Chorus change
+0x44 ('D'): Stroke down
+0x49 ('I'): Instrument change
+0x50 ('P'): Pan change
+0x52 ('R'): Reverb change
+0x54 ('T'): Tempo change
+0x55 ('U'): Stroke up
+0x56 ('V'): Volume change
+0x74 ('t'): Tempo change + 250
 ```
 
-For slot 17:
+#### Slot 17
+
 Single ASCII character for top line text
 
-For slot 18:
+
+#### Slot 18
+
 Single ASCII character for bottom line text
 
-For slot 19:
+
+#### Slot 19
+
 The change value for effects or track effects
 
 
@@ -514,13 +717,7 @@ while True:
 
 After a complete alternate time region list is created, then this is a delta list that is iterated through.
 
-Each word in the delta list has this structure:
-
-`s c`
-
-`s` is a byte that specifies how many vsqs to increment after this word.
-
-`c` is a byte that specifies what value to set for the current slot.
+Each byte in the expanded delta list corresponds to a value for the current slot.
 
 The current slot is computed by `vsqCount % 2`.
 
@@ -531,16 +728,17 @@ For slot 1:
 This is the numerator. For triplets, this is 3.
 
 
-### Effect Changes
+
+### Track Effect Changes
 
 If `versionNumber` is `0x70` or below, then skip this section.
 
 For each track, Effect Changes are stored as a chunk4.
 
-After reading the chunk4, there is a list that is iterated through.
+After reading the chunk4, there is an array list that is iterated through.
 
 Each entry in the list is an 8 byte structure:
-`{s1, s0, e1, e0, r1, r0, v1, v0}`
+`s1 s0 e1 e0 r1 r0 v1 v0`
 
 `s1 s0` is a short that specifies how many spaced to increment after this word.
 
