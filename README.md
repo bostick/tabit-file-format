@@ -14,6 +14,13 @@ The latest version of TabIt, version 2.03, was released in 2006.
 
 [Description of the .mid MIDI file format](description/midi-file-format-description.md)
 
+[TabIt Background](background)
+
+[Internal notes of reverse-engineering TabIt](internal-notes)
+
+[Reverse-engineering Journal](journal)
+
+
 I will be adding more tools such as .tbt file parsers for various languages.
 
 
