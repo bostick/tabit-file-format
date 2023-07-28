@@ -18,7 +18,7 @@ The format description was reverse-engineered and this document is not an offici
 Any deviations in this document from how TabIt actually works are errors in this document and should be brought to the attention of the author.
 
 
-I am not affiliated with TabIt and I do not own trademark associated with TabIt.
+I am not affiliated with TabIt and I do not own any trademark associated with TabIt.
 
 I am simply a fan who wants to see TabIt live.
 
@@ -620,9 +620,9 @@ while True:
 
 After a complete note list is created, then this is a delta list that is iterated through.
 
-Each byte in the expanded delta list corresponds to a value for the current slot.
+Each byte in the expanded delta list corresponds to a value for the current vsq index.
 
-The current slot is computed by `vsqCount % 20`.
+The current slot is computed by `vsqIndex % 20`.
 
 #### Slots 0 to 7
 
@@ -635,7 +635,6 @@ Drums may have higher numbers than the usual number of frets on guitar strings. 
 Besides note values, `0x11` is used for mute string (shown as `x` in TabIt) and `0x12` for stop string (shown as `*` in TabIt).
 
 A muted string plays for a 1/128 note.
-
 
 
 
@@ -697,7 +696,6 @@ The change value for effects or track effects
 
 
 
-
 ### Alternate Time Regions
 
 `featureBitfield` from header should be bit-masked with `0b00010000` to determine if there are alternate time regions.
@@ -717,9 +715,9 @@ while True:
 
 After a complete alternate time region list is created, then this is a delta list that is iterated through.
 
-Each byte in the expanded delta list corresponds to a value for the current slot.
+Each byte in the expanded delta list corresponds to a value for the current vsq index.
 
-The current slot is computed by `vsqCount % 2`.
+The current slot is computed by `vsqIndex % 2`.
 
 For slot 0:
 This is the denominator. For triplets, this is 2.
@@ -733,14 +731,14 @@ This is the numerator. For triplets, this is 3.
 
 If `versionNumber` is `0x70` or below, then skip this section.
 
-For each track, Effect Changes are stored as a chunk4.
+For each track, Track Effect Changes are stored as a chunk4.
 
 After reading the chunk4, there is an array list that is iterated through.
 
 Each entry in the list is an 8 byte structure:
 `s1 s0 e1 e0 r1 r0 v1 v0`
 
-`s1 s0` is a short that specifies how many spaced to increment after this word.
+`s1 s0` is a short that specifies how many spaces to increment after this word.
 
 `e1 e0` is a short that specifies the effect to change.
 
@@ -749,7 +747,7 @@ Each entry in the list is an 8 byte structure:
 `v1 v0` is a short that is the value of the effect change.
 
 
-Effects are numbered:
+Track Effects are numbered:
 ```
 1 = Stroke down
 2 = Stroke up
