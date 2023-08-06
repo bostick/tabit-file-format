@@ -1,8 +1,6 @@
 
 # Description of the .tbt TabIt file format
 
-
-
 ## Overview
 
 This document describes the format for .tbt files that are opened and saved by TabIt, a Windows application that is described in its website [^1] as
@@ -760,6 +758,65 @@ Track Effects are numbered:
 9 = Modulation
 10 = Pitch bend
 ```
+
+
+
+
+
+
+## describe the clever bits
+
+
+
+
+## how did i do it?
+
+
+reverse engineering TabIt files
+
+Since I have a copy of TabIt and I can run it, then an easy approach is to save different files while changing only 1 thing and see what the difference is.
+
+save various files:
+
+notes 012345 on 1 string
+
+notes 012345 on another string
+
+
+just change tempo
+
+
+etc.
+
+
+
+
+
+
+
+
+## special thanks
+
+
+foone
+reverse engineering ski free
+
+
+Dhrake:
+https://blag.nullteilerfrei.de/2019/12/23/reverse-engineering-delphi-binaries-in-ghidra-with-dhrake/
+
+
+that link talking about magic bytes and 78 DA
+https://tstillz.medium.com/basic-static-analysis-part-1-9c24497790b6
+
+
+
+
+
+
+
+
+
 
 
 ## References

@@ -9,6 +9,7 @@ Using reverse-engineering tools such as Ghidra and/or IDA Pro to analyze the Tab
 Efforts to reverse-engineer TabIt are hindered by a few factors:
 * compiled with Borland Delphi Pascal 2.0, released in 1996.
 * Windows SEH (Structured Exception Handling), not well supported in Ghidra
+https://github.com/NationalSecurityAgency/ghidra/issues/2477
 
 
 
@@ -32,6 +33,7 @@ Zlib 1.2.3 is embedded
 
 ## function offsets
 
+```
 0040a544 Format
 
 0040a558 FmtStr
@@ -145,13 +147,7 @@ Zlib 1.2.3 is embedded
 004caba4 dumpTBT
 
 004c9290 parseTBT
-
-
-
-
-
-
-
+```
 
 
 
@@ -159,6 +155,7 @@ Zlib 1.2.3 is embedded
 
 ## structs
 
+```
 TBT_header_struct
 
 0x00: string magic
@@ -176,13 +173,11 @@ TBT_header_struct
 0x34: int crc32Rest
 0x38: int totalByteCount
 0x3c: int crc32Header
+```
 
 
 
-
-
-
-
+```
 TBT_z4096_struct (4164 = 0x1044 bytes)
 
 0x00: TFileStream * TFileStreamObject
@@ -193,12 +188,12 @@ TBT_z4096_struct (4164 = 0x1044 bytes)
 0x1041: byte
 0x1042: byte
 0x1043: byte
+```
 
 
 
 
-
-
+```
 offsets in first big thing
 
 0x364: ?
@@ -206,11 +201,11 @@ offsets in first big thing
 0x674: ?
 0x6a8: ?
 0x6c0: ?
+```
 
 
 
-
-
+```
 offsets in TBT_song_struct
 
 0x0c: a string?
@@ -233,11 +228,11 @@ offsets in TBT_song_struct
 0xa8: some thing that is iterated through during construction
 0xb1: zeroed during init
 0xb4: seems to be another string, file name?
+```
 
 
 
-
-
+```
 offsets in track objects (size AT LEAST 98 = 0x62 bytes)
 
 0x0: ? something with reading Registry ?
@@ -268,11 +263,11 @@ offsets in track objects (size AT LEAST 98 = 0x62 bytes)
 0x54: tuning (8 bytes)
 0x5c: drum?
 0x60: spaceCount (2 bytes) ?
+```
 
 
 
-
-
+```
 offsets in space objects (size 24 = 0x18 bytes)
 
 0x00: note
@@ -299,7 +294,7 @@ offsets in space objects (size 24 = 0x18 bytes)
 0x15:
 0x16: ?, set in FUN_004c77ac and FUN_004c776c, seems to always be 1
 0x17: ?, set in FUN_004c77ac and FUN_004c776c, seems to always be 1
-
+```
 
 
 
@@ -307,16 +302,11 @@ offsets in space objects (size 24 = 0x18 bytes)
 ## fixing function calling conventions
 
 
-
-
 Borland register
 
 https://en.wikipedia.org/wiki/X86_calling_conventions#Borland_register
 
 Evaluating arguments from left to right, it passes three arguments via EAX, EDX, ECX. Remaining arguments are pushed onto the stack, also left to right.
-
-
-
 
 
 
@@ -332,60 +322,28 @@ int __usercall Assert@<eax>(char *@<eax>, char *@<edx>, int@<ecx>)
 
 
 
-
 ##
 
 this seems correct:
 
+```
 void __usercall sub_4C8A38(int barCount@<eax>)
-
+```
 
 
 the call is:
+```
 sub_4C8A38(*(unsigned __int16 *)&HEADER[40]);
+```
 
 
 
 
 
+## steps for loading IDA Pro
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-steps for loading IDA Pro
-
-##
 keep processor type MetaPC
 
-
-
-##
 Options > Compiler...
 
 Compiler: Delphi
@@ -396,29 +354,11 @@ NO!
 
 Fastcall ?
 
-
-
-
-
-##
 run TabIt.idc
-
 
 File > Script file...
 
-
-
-
-
-
-##
 load tbt-structs.h
-
-
-
-
-
-##
 
 load function names
 
@@ -431,31 +371,9 @@ TabIt functions
 
 
 
+## immediate steps for TabIt RE
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-immediate steps for TabIt RE
-
-
-## understand and fix negative stack offsets
+understand and fix negative stack offsets
 
 
 
@@ -476,36 +394,9 @@ seeing stuff like:
 
 
 
+## notes on Zlib
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-notes on Zlib
-
-
+```
 #define Z_OK            0
 #define Z_STREAM_END    1
 #define Z_NEED_DICT     2
@@ -529,48 +420,14 @@ notes on Zlib
 #define Z_ASCII    Z_TEXT   /* for compatibility with 1.2.2 and earlier */
 #define Z_UNKNOWN  2
 /* Possible values of the data_type field (though see inflate()) */
+```
 
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-notes on Ghidra
-
-
+## notes on Ghidra
 
 
 Ghidra: Fix in_, extraout_, in_stack_ decompiler variables
@@ -598,6 +455,8 @@ Reverse Engineering SkiFree
 
 https://twitter.com/Foone/status/1536053690368348160
 
+Reverse engineering Skifree | Hacker News
+https://news.ycombinator.com/item?id=31718756
 
 
 
@@ -639,8 +498,7 @@ https://twitter.com/Foone/status/1536053690368348160
 
 
 
-
-notes on Delphi
+## notes on Delphi
 
 
 

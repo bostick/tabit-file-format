@@ -3,26 +3,11 @@
 
 
 
-goal is to learn ghidra and:
-
-1. crack tabit
-
-2. reverse engineer the file format
-
-
-
-
-
-
-
-jul 17 2022
+* jul 17 2022
 
 trying to use Ghidra
 
-
 already gettings errors when importing .exe
-
-see screenshots
 
 ```
 
@@ -48,52 +33,29 @@ see screenshots
 	at java.base/java.lang.Thread.run(Thread.java:833)
 ```
 
-
 2022-07-16	16:16:47	ERROR	(ResourceDataDirectory) Invalid resource data: Name cannot end with a delimiter: Program Information. in Options  java.lang.IllegalArgumentException: Name cannot end with a delimiter: Program Information. in Options
 
 
-
-there are mentions of VS_VERSION_INFO in functions up the stack, so let's get a tool that can dump out info about the PE file
+there are mentions of `VS_VERSION_INFO` in functions up the stack, so let's get a tool that can dump out info about the PE file
 
 so look into:
 
 https://github.com/trailofbits/pe-parse
 
-Mention Trail Of Bits!
-
-
-
-
-
-
 guess I'm building ghidra in order to log more info!
 
-
-
-
-
-
 so it looks like there is padding that ghidra is not taking into account
-
 
 padding between ChildrenStringFileInfo and ChildrenVarFileInfo
 
 padding between Strings
-
-
-
 
 padding is not described here:
 https://docs.microsoft.com/en-us/windows/win32/menurc/vs-versioninfo
 
 
 
-
-
-
-
-
-jul 18 2022
+* jul 18 2022
 
 getting closer
 
@@ -113,7 +75,7 @@ getting closer
 ```
 
 
-difference in getPointerIndex() is 60
+difference in `getPointerIndex()` is 60
 
 but that is CHARACTERS not BYTES
 
@@ -124,7 +86,7 @@ pressing onward...
 
 
 
-jul 24 2022
+* jul 24 2022
 
 created:
 
@@ -134,15 +96,11 @@ https://github.com/NationalSecurityAgency/ghidra/pull/4452
 
 
 
-
-
-
-
-sun feb 26 2023
+* feb 26 2023
 
 Huge step with TabIt!
 
-Was reading about basic RE and static analysis
+Was reading about basic RE and static analysis:
 
 https://tstillz.medium.com/basic-static-analysis-part-1-9c24497790b6
 
@@ -154,13 +112,7 @@ and sure enough, TabIt files have 0x78 0xDA and the rest of the file seems to be
 
 
 
-
-
-
-
-
-
-sat may 13 2023
+* may 13 2023
 
 really need to sit down and finish all of the various versions
 
@@ -172,21 +124,16 @@ multiple changes at the same time
 
 how are these formats different?
 
+```
 0x6e == version 1.5,
 0x6f == version 1.6,
 0x70 == version 2.0 : alternate time region ?,
 0x71 == version 2.0 : alternate time region ?,
 0x72 == version 2.0 : modulation, multiple events at same time ?
+```
 
 
-
-
-
-
-
-
-
-fri may 19 2023
+* may 19 2023
 
 you can do things speculatively!
 
@@ -201,23 +148,13 @@ maybe there are bugs in tabit to work around?
 
 
 
-
-
-
-sun may 28 2023
+* may 28 2023
 
 downloaded all of the .tbts from https://tabarea.net/
 
 
 
-
-
-
-
-
-
-tues may 30 2023
-
+* may 30 2023
 
 speculatively parse with these choices:
 
@@ -246,14 +183,7 @@ TabIt-2.03-full.exe
 
 
 
-
-
-
-
-
-
-
-wed may 31
+* may 31 2023
 
 i don't really know what i'm doing
 
@@ -262,10 +192,7 @@ going through and adding Pascal255 strings where obvious
 
 
 
-
-
-
-fri jun 2 2023
+* jun 2 2023
 
 trying to use IDR
 
@@ -277,10 +204,7 @@ https://github.com/crypto2011/IDR/issues/86
 
 
 
-
-
-
-sat jun 3 2023
+* jun 3 2023
 
 ok, slowly coming to realization that the PE is packed, probably by InnoSetup
 
@@ -340,10 +264,20 @@ now going through TabIt.exe and correcting all string stuff: adding PascalString
 
 
 
+* jun 6 2023
+
+CRC !!
+
+CRC32 code is also used in other projects:
+https://github.com/jrsoftware/issrc/blob/c0778bb57d028ffe04dc4492f3b44e9dd932d274/Projects/Compress.pas#L125
 
 
 
-fri jun 9 2023
+
+
+
+
+* jun 9 2023
 
 solid week of RE work
 
@@ -358,7 +292,6 @@ push LAB_004c9a4c
 ```
 
 at the end of parseTBT
-
 
 
 ghidra does not handle Windows SEH:
@@ -383,11 +316,7 @@ but IDA Pro is more annoying to work with
 
 
 
-
-
-
-
-sat jun 10
+* jun 10 2023
 
 calling conventions
 
@@ -398,12 +327,7 @@ special calling conventions used by Borland Delphi
 
 
 
-
-
-
-
-
-mon jun 12 2023
+* jun 12 2023
 
 kind of giving up on RE the .exe itself
 
@@ -416,13 +340,7 @@ will just figure it out myself
 
 
 
-
-
-
-
-
-
-fri jun 16 2023
+* jun 16 2023
 
 i have finished my work on the TabIt file format
 
@@ -437,11 +355,7 @@ hell yeah!
 
 
 
-
-
-
-
-tues jun 27 2023
+* jun 27 2023
 
 realized i can do the math and verify that all tracks have the same number of spaces, accounting for alternate time regions 
 

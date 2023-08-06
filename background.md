@@ -1,286 +1,77 @@
 
 # TabIt Background
 
+This document describes the background of TabIt, a Windows application that is described in its website [^1] as
 
-whole little story of everything
+> a full-featured program for creating, playing, and printing guitar, bass, or banjo tablature.
 
+TabIt is effectively abandonware.
 
+The latest version of TabIt, version 2.03, was released in 2006.
 
+TabIt is sold by GTAB Software, and I believe that company to be run by 1 person: Jordan Russell.
 
 
-## "The Story of Tabit"
+## Community
 
+There is a semi-active TabIt [subreddit](https://reddit.com/r/tabit/).
 
+(Tablature Area)[https://tabarea.net/] is a mirror of the tabs from tabit.net.
 
-Jordan Russell
 
+## The Crisis
 
+On November 10th, 2019, the [Tablature Area](www.tabit.net/tabs) went down.
 
 
-what is TabIt ?
+From tabit.net:
 
+> Update as of Feb. 26, 2020:
 
-everything is on a grid!
+> Sorry for the continued delay, folks. Work has begun on getting the Tablature Area ready, but finding the time to complete the job has proven difficult. Still no ETA yet, I'm afraid. This page will be updated again when there is more progress to report.
 
+> And FYI, this server move was not planned. It had to happen because the previous hosting provider shut down their data center on relatively short notice.
 
 
+And since at least June 2021:
 
-## the crisis
+> Update as of June 29:
 
-when the forum went down
+> Since most users are mainly interested in just downloading tabs that already existed in the Tablature Area, I've decided for now to focus on trying to bring the Tablature Area up in a "read-only" state — i.e., with no ability to log in, upload tabs, or rate tabs — rather than holding off until the entire site is 100% ready. Will post another update when progress is made on that.
 
+> Tech details for those curious: The Tablature Area was built on PHP 5, which has reached end-of-life and is no longer available on modern servers. Getting it to work on PHP 7+ requires a lot of changes across the code base, mainly because they dropped the "mysql" extension (which was a very unwelcome surprise!). There may be various other PHP 7 or MySQL 8.0 incompatibilities which I haven't uncovered yet; each page will require careful re-testing before being made accessible to the public.
 
-Update as of Feb. 26, 2020:
 
-Sorry for the continued delay, folks. Work has begun on getting the Tablature Area ready, but finding the time to complete the job has proven difficult. Still no ETA yet, I'm afraid. This page will be updated again when there is more progress to report.
 
-And FYI, this server move was not planned. It had to happen because the previous hosting provider shut down their data center on relatively short notice.
+## History of TabIt releases
 
+* [1.43](https://web.archive.org/web/20001206181300/http://www.tabit.net/download.htm)
 
+* [1.52](https://web.archive.org/web/20010406041925/http://www.tabit.net/download.htm)
 
+<!-- https://web.archive.org/web/20010609064805/http://members.aol.com/tabitsoftware/WinTabIt152.exe -->
 
+* [1.57](https://web.archive.org/web/20010813114532/http://tabit.net/download.htm)
 
+* [1.58](https://web.archive.org/web/20020408145006/http://tabit.net/download.htm)
 
+* [1.59](https://web.archive.org/web/20021012041140/http://tabit.net/download.htm)
 
+<!-- https://web.archive.org/web/20021010181902/http://www.tabit.net/files/WinTabIt159.exe -->
 
+* [1.61](https://web.archive.org/web/20031002082703/http://www.tabit.net/download.htm)
 
+* [1.62](https://web.archive.org/web/20040209103438/http://tabit.net/download.htm)
 
-## history of TabIt
+* [2.02](https://web.archive.org/web/20060925180247/http://www.tabit.net/download.htm)
 
+* [2.03](https://web.archive.org/web/20070727152913/http://www.tabit.net/download.htm)
 
 
 
-https://web.archive.org/web/20001206181300/http://www.tabit.net/download.htm
+## References
 
-1.43
-
-
-
-
-https://web.archive.org/web/20010406041925/http://www.tabit.net/download.htm
-
-1.52
-
-https://web.archive.org/web/20010609064805/http://members.aol.com/tabitsoftware/WinTabIt152.exe
-
-
-
-
-
-https://web.archive.org/web/20010813114532/http://tabit.net/download.htm
-
-1.57
-
-
-
-https://web.archive.org/web/20020408145006/http://tabit.net/download.htm
-
-1.58
-
-
-
-https://web.archive.org/web/20021012041140/http://tabit.net/download.htm
-
-1.59
-https://web.archive.org/web/20021010181902/http://www.tabit.net/files/WinTabIt159.exe
-
-
-
-
-
-https://web.archive.org/web/20031002082703/http://www.tabit.net/download.htm
-
-1.61
-
-
-
-
-https://web.archive.org/web/20040209103438/http://tabit.net/download.htm
-
-1.62
-
-
-
-https://web.archive.org/web/20060925180247/http://www.tabit.net/download.htm
-
-2.02
-
-
-
-
-https://web.archive.org/web/20070727152913/http://www.tabit.net/download.htm
-
-2.03
-
-
-
-
-
-## my relationship
-
-stopped using before alternate time regions
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-## describe the clever bits
-
-
-
-
-
-
-
-## how did i do it?
-
-
-<!--
-
-hacker gene
-
-"i don't know how to do this, so i'm going to learn"
-
-banging my head on the wall, john cage
-
-
-story about "petals on the rose", and how i need to see everything in front of me
-
--->
-
-
-reverse engineering TabIt files
-
-Since I have a copy of TabIt and I can run it, then an easy approach is to save different files while changing only 1 thing and see what the difference is.
-
-save various files:
-
-notes 012345 on 1 string
-
-notes 012345 on another string
-
-
-just change tempo
-
-
-etc.
-
-
-
-
-ask for help with IDA Pro / Ghidra
-
-
-
-
-
-
-
-
-
-is it legal to reverse-engineer file formats?
-
-https://law.stackexchange.com/questions/83545/is-it-legal-to-reverse-engineer-and-reimplement-a-file-format
-
-
-
-
-
-
-
-
-
-
-my bug report about ghidra
-
-
-
-
-
-
-
-
-
-
-
-## SDKs
-
-C++
-
-Rust
-
-Python
-
-Javascript / Typescript
-
-Wolfram
-
-
-
-
-
-
-
-## special thanks
-
-
-foone
-reverse engineering ski free
-
-
-Dhrake:
-https://blag.nullteilerfrei.de/2019/12/23/reverse-engineering-delphi-binaries-in-ghidra-with-dhrake/
-
-
-that link talking about magic bytes and 78 DA
-https://tstillz.medium.com/basic-static-analysis-part-1-9c24497790b6
-
-
-
-
-
-
-
-
-
-
-## references
-
-[1] http://www.tabit.net/
-
-[2] https://reddit.com/r/tabit/
-
-[3] https://tabarea.net/
-
-
-
-
+[^1]: [http://www.tabit.net/](http://www.tabit.net/)
 
 
 
