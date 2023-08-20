@@ -761,60 +761,38 @@ Track Effects are numbered:
 
 
 
-
-
-
+<!--
 ## describe the clever bits
+-->
 
 
-
-
-## how did i do it?
-
-
-reverse engineering TabIt files
+## How did I do it?
 
 Since I have a copy of TabIt and I can run it, then an easy approach is to save different files while changing only 1 thing and see what the difference is.
 
-save various files:
+For example, putting the notes `012345` on low E string, then putting the notes `012345` on the A string, and seeing how the files differ.
 
-notes 012345 on 1 string
-
-notes 012345 on another string
-
-
-just change tempo
-
+Change the tempo, then resave, and see how the files differ.
 
 etc.
 
+It will take a lot of work!
 
 
 
+## Special Thanks
+
+Thank you to @foone for the Twitter thread on reverse-engineering SkiFree:
+[https://twitter.com/Foone/status/1536053690368348160](https://twitter.com/Foone/status/1536053690368348160)
+
+Thank you to rattle for writing about reverse-engineering Delphi binaries:
+[https://blag.nullteilerfrei.de/2019/12/23/reverse-engineering-delphi-binaries-in-ghidra-with-dhrake/](https://blag.nullteilerfrei.de/2019/12/23/reverse-engineering-delphi-binaries-in-ghidra-with-dhrake/)
 
 
-
-
-## special thanks
-
-
-foone
-reverse engineering ski free
-
-
-Dhrake:
-https://blag.nullteilerfrei.de/2019/12/23/reverse-engineering-delphi-binaries-in-ghidra-with-dhrake/
-
-
+<!--
 that link talking about magic bytes and 78 DA
 https://tstillz.medium.com/basic-static-analysis-part-1-9c24497790b6
-
-
-
-
-
-
-
+-->
 
 
 
