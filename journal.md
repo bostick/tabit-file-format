@@ -1,9 +1,7 @@
 
 # Reverse-engineering Tabit journal
 
-
-
-* jul 17 2022
+* Jul 17 2022
 
 trying to use Ghidra
 
@@ -55,7 +53,7 @@ https://docs.microsoft.com/en-us/windows/win32/menurc/vs-versioninfo
 
 
 
-* jul 18 2022
+* Jul 18 2022
 
 getting closer
 
@@ -83,10 +81,7 @@ pressing onward...
 
 
 
-
-
-
-* jul 24 2022
+* Jul 24 2022
 
 created:
 
@@ -96,7 +91,7 @@ https://github.com/NationalSecurityAgency/ghidra/pull/4452
 
 
 
-* feb 26 2023
+* Feb 26 2023
 
 Huge step with TabIt!
 
@@ -106,13 +101,13 @@ https://tstillz.medium.com/basic-static-analysis-part-1-9c24497790b6
 
 Was mentioning common magic bytes used by zlib
 
-0x78 0xDA for best compression
+`0x78 0xDA` for best compression
 
 and sure enough, TabIt files have 0x78 0xDA and the rest of the file seems to be a valid zlib stream
 
 
 
-* may 13 2023
+* May 13 2023
 
 really need to sit down and finish all of the various versions
 
@@ -133,7 +128,7 @@ how are these formats different?
 ```
 
 
-* may 19 2023
+* May 19 2023
 
 you can do things speculatively!
 
@@ -148,17 +143,17 @@ maybe there are bugs in tabit to work around?
 
 
 
-* may 28 2023
+* May 28 2023
 
-downloaded all of the .tbts from https://tabarea.net/
+Downloaded all of the .tbts from https://tabarea.net/
 
 
 
-* may 30 2023
+* May 30 2023
 
 speculatively parse with these choices:
 
-when a chunk length is 0x00,0x10, maybe it really is that length and no overflow?
+when a chunk length is `0x00 0x10`, maybe it really is that length and no overflow?
 
 sometimes it is overflow?
 
@@ -177,24 +172,24 @@ other choices to make?
 Now that I have a good understanding of the structure of .tbt files, and just a few questions remaining,
 maybe it would be good to use Ghidra again to reverse engineer the actual TabIt executable to understand what is happening?
 
-TabIt-2.03-full.exe
+`TabIt-2.03-full.exe`
 
 
 
 
 
-* may 31 2023
+* May 31 2023
 
-i don't really know what i'm doing
+I don't really know what i'm doing
 
-going through and adding Pascal255 strings where obvious
-
-
+Going through and adding Pascal255 strings where obvious
 
 
-* jun 2 2023
 
-trying to use IDR
+
+* Jun 2 2023
+
+Trying to use IDR
 
 created this issue:
 
@@ -204,7 +199,7 @@ https://github.com/crypto2011/IDR/issues/86
 
 
 
-* jun 3 2023
+* Jun 3 2023
 
 ok, slowly coming to realization that the PE is packed, probably by InnoSetup
 
@@ -214,13 +209,13 @@ and i don't see anything to do with playing sound
 
 so trying to figure out how to unpack
 
-reading through this book:
+Reading through this book:
 https://archive.org/details/malware-analysis-and-detection-engineering
 
 http://www.malware-analysis-and-detection-engineering.com/
 
 
-use this suite of tools:
+Use this suite of tools:
 https://github.com/mentebinaria/readpe
 
 
@@ -236,8 +231,6 @@ packer:                          no packer found
 brenton@Brentons-M1-MacBook-Pro Downloads % 
 brenton@Brentons-M1-MacBook-Pro Downloads % 
 ```
-
-
 
 jesus christ
 
@@ -264,7 +257,7 @@ now going through TabIt.exe and correcting all string stuff: adding PascalString
 
 
 
-* jun 6 2023
+* Jun 6 2023
 
 CRC !!
 
@@ -277,7 +270,7 @@ https://github.com/jrsoftware/issrc/blob/c0778bb57d028ffe04dc4492f3b44e9dd932d27
 
 
 
-* jun 9 2023
+* Jun 9 2023
 
 solid week of RE work
 
@@ -319,7 +312,7 @@ but IDA Pro is more annoying to work with
 
 
 
-* jun 10 2023
+* Jun 10 2023
 
 calling conventions
 
@@ -330,7 +323,7 @@ special calling conventions used by Borland Delphi
 
 
 
-* jun 12 2023
+* Jun 12 2023
 
 kind of giving up on RE the .exe itself
 
@@ -343,7 +336,7 @@ will just figure it out myself
 
 
 
-* jun 16 2023
+* Jun 16 2023
 
 i have finished my work on the TabIt file format
 
@@ -358,14 +351,16 @@ hell yeah!
 
 
 
-* jun 27 2023
+* Jun 27 2023
 
 realized i can do the math and verify that all tracks have the same number of spaces, accounting for alternate time regions 
 
 but not everything is consistent!
 
 trying to find problem with:
+```
 "/Users/brenton/Downloads/TabIt Tablature (2020)/Adele/Rolling In The Deep.tbt"
+```
 
 problem was that i was treating delta lists as having default values
 
