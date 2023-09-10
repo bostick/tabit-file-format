@@ -298,6 +298,9 @@ ghidra does not handle Windows SEH:
 https://github.com/NationalSecurityAgency/ghidra/issues/2477
 
 
+![Bad SEH](bad-seh.png)
+
+
 
 https://twitter.com/c3rb3ru5d3d53c/status/1395346478172942338
 

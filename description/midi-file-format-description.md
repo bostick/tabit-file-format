@@ -205,7 +205,7 @@ c k   1                             63 6b 20 31
 . . . 7 .                           83 00 80 37 00 ; note off
 . . 2 .                                00 80 32 00 ; note off
 . . 0 .                                00 80 30 00 ; note off
-. . / .                             00 ff 2f 00    ; end of track
+. . / .                                00 ff 2f 00 ; end of track
 ```
 
 

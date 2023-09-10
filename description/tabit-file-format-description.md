@@ -344,11 +344,11 @@ The first 64 bytes of a .tbt file is the header.
 
 ```
 0x00: magic (3 bytes)
-0x03: versionNumber
-0x04: tempo1
-0x05: trackCount
+0x03: versionNumber: byte
+0x04: tempo1: byte
+0x05: trackCount: byte
 0x06: versionString (5 bytes Pascal string)
-0x0b: featureBitfield
+0x0b: featureBitfield: byte
 0x0c: unused (28 bytes)
 0x28: barCountGE70: short
 0x2a: spaceCount6f: short
