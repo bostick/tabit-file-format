@@ -210,6 +210,12 @@ Strings in .tbt files are stored as Pascal strings.
 
 Pascal strings store their length first and lengths will be a byte or a short, depending on use.
 
+There are Pascal1 strings and Pascal2 strings.
+
+Pascal1 strings store their length as a byte.
+
+Pascal2 strings store their length as a short.
+
 A "chunk" is a stream of bytes with its length provided at the beginning.
 
 "chunks" are blobs of binary data that store their length first and lengths will be a short or an int, depending on use.
@@ -347,7 +353,7 @@ The first 64 bytes of a .tbt file is the header.
 0x03: versionNumber: byte
 0x04: tempo1: byte
 0x05: trackCount: byte
-0x06: versionString (5 bytes Pascal string)
+0x06: versionString (Pascal1 string)
 0x0b: featureBitfield: byte
 0x0c: unused (28 bytes)
 0x28: barCountGE70: short
@@ -452,15 +458,15 @@ else:
 drumBlock = read(1 * trackCount)
 
 if 0x6d <= versionNumber:
-  title = read(Pascal string)
-  artist = read(Pascal string)
-  album = read(Pascal string)
-  transcribedBy = read(Pascal string)
-  comment = read(Pascal string)
+  title = read(Pascal2 string)
+  artist = read(Pascal2 string)
+  album = read(Pascal2 string)
+  transcribedBy = read(Pascal2 string)
+  comment = read(Pascal2 string)
 else:
-  title = read(Pascal string)
-  artist = read(Pascal string)
-  comment = read(Pascal string)
+  title = read(Pascal2 string)
+  artist = read(Pascal2 string)
+  comment = read(Pascal2 string)
 ```
 
 `spaceCountBlock` is the number of spaces for each track, stored as an int.
@@ -593,11 +599,11 @@ After bitmasking with `0x00001111`, the value determines which bar lines to make
 4 = insert double bar line
 ```
 
-Single bar line is inserted between CURRENT and NEXT space.
+Single bar line is inserted between CURRENT and NEXT spaces.
 
-Open repeat is inserted between PREVIOUS and CURRENT space.
+Open repeat is inserted between PREVIOUS and CURRENT spaces.
 
-Close repeat is inserted between CURRENT and NEXT space.
+Close repeat is inserted between CURRENT and NEXT spaces.
 
 It is as if each space has only 1 slot, so no need to compute it.
 
