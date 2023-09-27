@@ -5,6 +5,17 @@ This is a description of [twinkle.mid](twinkle.mid).
 
 This description will be a little looser than the .tbt TabIt file description.
 
+
+| String | Note name | MIDI note      |
+| ------------------------------------|
+| e      | E4        | 64 (0x40)      |
+| B      | B3        | 59 (0x3b)      |
+| G      | G3        | 55 (0x37)      |
+| D      | D3        | 50 (0x32)      |
+| A      | A2        | 45 (0x2d)      |
+| E      | E2        | 40 (0x28)      |
+
+
 The whole file is 494 bytes and looks like this:
 ```
 M T h d . . . . . . . . . . M T     4d 54 68 64 00 00 00 06 00 01 00 02 00 c0 4d 54

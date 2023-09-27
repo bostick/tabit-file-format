@@ -190,7 +190,7 @@ TabIt supports up to 15 tracks.
 
 Each track may have up to 32000 spaces.
 
-Each track may have 8 strings in a track.
+Each track may have up to 8 strings.
 
 The highest note on each string may be 99.
 
@@ -407,7 +407,7 @@ If `versionNumber <= 0x6f`, `lastNonEmptySpaceLE6f` is the last non-empty space 
 
 `totalByteCount` is the total number of bytes in the file.
 
-`crc32Header` is the CRC-32 of the header (first 63 bytes).
+`crc32Header` is the CRC-32 of the header (first 60 bytes).
 
 
 
@@ -474,9 +474,15 @@ else:
 `stringCountBlock` is the number of strings for each track, stored as a byte.
 
 `cleanGuitarBlock` is the MIDI program number for clean guitar for each track, stored as a byte.
-For cleanGuitarBlock:
-Use bit mask `0b10000000` to determine dontLetNotesRing.
+
+Use bit mask `0b10000000` to determine the Dont Let Notes Ring flag.
 Use bit mask `0b01111111` to determine the actual MIDI program number.
+
+If Dont Let Notes Ring flag is `1`, then each string rings until the next event on ANY string.
+
+If Dont Let Notes Ring flag is `0`, then each string rings independently until the next event on THAT string.
+
+The MIDI program number is something like 27 for Electric Guitar (clean).
 
 `mutedGuitarBlock` is the MIDI program number for muted guitar for each track, stored as a byte.
 mutedGuitarBlock seems to be unused. Older files can have non-default values for muted guitar, but there is no way to edit with the latest version of TabIt.
@@ -492,6 +498,8 @@ mutedGuitarBlock seems to be unused. Older files can have non-default values for
 
 `midiBankBlock` is the MIDI bank number to use for each track, stored as a byte.
 
+`midiBank` can range from 0 to 127.
+
 `reverbBlock` is the reverb effect for each track, stored as a byte.
 
 `chorusBlock` is the chorus effect for each track, stored as a byte.
@@ -503,6 +511,8 @@ mutedGuitarBlock seems to be unused. Older files can have non-default values for
 `displayMIDINoteNumbersBlock` controls whether to display MIDI note numbers for each track, stored as a byte.
 
 `midiChannelBlock` is the MIDI channel for each track, stored as a byte.
+
+`midiChannel` can be -1, which means "Automatically assign", or can be: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 (Drums), 11, 12, 13, 14, 15, 16.
 
 `topLineTextBlock` controls whether there is text at the top of each track, stored as a byte.
 
