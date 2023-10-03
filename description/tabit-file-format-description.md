@@ -46,7 +46,7 @@ q . < . . . . . . . . . " . . .     71 c3 3c a8 1c b2 18 08 fb 01 c5 16 22 b1 d1
 , . # 7 . L . . 1 . . . T % |       2c c0 23 37 8f 4c fb e6 31 00 00 d3 54 25 7c
 ```
 
-The first 64 bytes of TabIt files is the header:
+The first 64 bytes of a TabIt file is the header:
 ```
 T B T o x . . 1 . 6 . . . . . .     54 42 54 6f 78 01 03 31 2e 36 00 0b 00 00 00 00
 . . . . . . . . . . . . . . . .     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
@@ -60,7 +60,7 @@ x . c . . I ` . . . . . . . . .     78 da 63 93 96 49 60 00 02 07 09 86 ff 0c d8
 . 1 U . .                           00 31 55 01 f5
 ```
 
-Then the body, which is also a zlib stream:
+And finally the body, which is also a zlib stream:
 ```
 x . . ` . g ` d $ . . 2 0 2 0 6     78 da 93 60 e0 67 60 64 24 05 87 32 30 32 30 36
 . . q   . c . ? . 7 A q . < . .     fb 03 71 20 03 63 83 3f 04 37 41 71 c3 3c a8 1c  
@@ -93,7 +93,7 @@ O . . . O . . . O . . . O . . .     4f  00  01  80  4f  00  01  82  4f  00  01  
 O . . . O . . . N . . . . .         4f  00  01  80  4f  00  01  80  4e  00  01  83  9e  00
 ```
 
-The uncompressed body has 2 sections.
+The uncompressed body has 2 sections: bars and notes.
 
 This is the bars section of the body:
 ```
@@ -122,7 +122,7 @@ U . . . . . O . . . Q . . . O .     55  00  01  00  01  83  4f  00  01  83  51  
 
 ## Terminology
 
-A "space" is a slice of notes at one instant of time.
+A space is a slice of notes at one instant of time.
 
 ![Highlighting a single space in TabIt](single-space.png)
 
@@ -143,7 +143,7 @@ In other situations, it is necessary to sub-divide a space into only 2 parts, an
 
 Different versions of TabIt may save to the same file format version.
 
-This document deals with version numbers encoded in .tbt files and doesn't talk about versions of the TabIt product itself.
+This document deals with version numbers encoded in .tbt files and does not talk about versions of the TabIt product itself.
 
 Relatedly, TabIt files store both a version number and a version string.
 
@@ -180,7 +180,7 @@ Version `0x70` added alternate time regions.
 
 Version `0x71` added added modulation, pitch bend, multiple changes at same time.
 
-Note that `0x71` is "unstable" meaning that resaving `0x71` files saves them as `0x72` files.
+Note that `0x71` is "unstable", which means that resaving `0x71` files saves them as `0x72` files.
 
 
 
@@ -208,7 +208,7 @@ A 4-byte integer will be referred to as an "int".
 
 Strings in .tbt files are stored as Pascal strings.
 
-Pascal strings store their length first and lengths will be a byte or a short, depending on use.
+Pascal strings store their length first.
 
 There are Pascal1 strings and Pascal2 strings.
 
@@ -216,33 +216,33 @@ Pascal1 strings store their length as a byte.
 
 Pascal2 strings store their length as a short.
 
-A "chunk" is a stream of bytes with its length provided at the beginning.
+A chunk is a blob of binary data that stores its length first.
 
-"chunks" are blobs of binary data that store their length first and lengths will be a short or an int, depending on use.
+There are Chunk2s and Chunk4s.
 
-There are chunk2s and chunk4s.
+Chunk2s store their length as a short and it signifies how many shorts to read.
 
-chunk2s have 2 bytes at the beginning that signify how many shorts to read.
+This is important: the number of bytes to read in a Chunk2 is TWO TIMES the length stored at the beginning.
 
-chunk4s have 4 bytes at the beginning that signify how many bytes to read.
+Chunk4s store their length as an int and it signifies how many bytes to read.
 
-zlib streams are blobs of binary data that must be inflated with zlib. All zlib streams in .tbt files begin with the bytes `0x78 0xda`, which come from zlib and mean that best compression was used.
+Zlib streams are blobs of binary data that must be inflated with zlib. All zlib streams in .tbt files begin with the bytes `0x78 0xda`, which come from zlib and mean that the best compression was used.
 
-An "array list" is a stream of structured data that can be iterated through and may also be indexed.
+An ArrayList is a stream of structured data that can be iterated through and may also be indexed.
 
-A "delta list" uses a kind of delta encoding and is iterated through, but cannot be meaningfully indexed.
+A DeltaList uses a kind of delta encoding and is iterated through, but cannot be meaningfully indexed.
 
 
 
-## A note on iterating through delta lists
+## A note on iterating through DeltaLists
 
-Iterating through delta lists happens a few times in TabIt files.
+Iterating through DeltaLists happens a few times in TabIt files.
 
-Delta lists use an increment that is delta encoded and a payload.
+DeltaLists use an increment that is delta encoded and a payload.
 
-Delta lists use a simple scheme for encoding variable-length increments.
+DeltaLists use a simple scheme for encoding variable-length increments.
 
-If the first byte read is anything other than `00` then, that byte is the increment.
+If the first byte read is anything other than `00` then, then that byte is the increment.
 
 If the first byte read is `00`, then this means to read the next 2 bytes as a short, and that is the increment.
 
@@ -252,7 +252,7 @@ And the bytes `00 21 01 02` mean to increment 289 (which is the value of `21 01`
 
 The bytes `4f 00` mean to increment `4f` bytes and fill-in with value `00`.
 
-Here is the delta list for the notes section of the Twinkle example:
+Here is the DeltaList for the notes section of the Twinkle example:
 ```
 . . . . O . . . Q . . . O . . .     01  00  01  83  4f  00  01  83  51  00  01  80  4f  00  01  80
 O . . . O . . . O . . . . . . .     4f  00  01  82  4f  00  01  82  4f  00  01  80  9e  00  01  83
@@ -314,7 +314,7 @@ Here is a better visualization of the same bytes:
 . . . .     01  83  9e  00
 ```
 
-We can step through the process of iterating through this delta list.
+We can step through the process of iterating through this DeltaList.
 
 To start, `vsqCount = 0`.
 
@@ -473,10 +473,10 @@ else:
 
 `stringCountBlock` is the number of strings for each track, stored as a byte.
 
-`cleanGuitarBlock` is the MIDI program number for clean guitar for each track, stored as a byte.
+`cleanGuitarBlock` is the combination of both MIDI program number and Dont Let Notes Ring flag for clean guitar for each track, stored as a byte.
 
 Use bit mask `0b10000000` to determine the Dont Let Notes Ring flag.
-Use bit mask `0b01111111` to determine the actual MIDI program number.
+Use bit mask `0b01111111` to determine the MIDI program number.
 
 If Dont Let Notes Ring flag is `1`, then each string rings until the next event on ANY string.
 
@@ -485,8 +485,8 @@ If Dont Let Notes Ring flag is `0`, then each string rings independently until t
 The MIDI program number is something like 27 for Electric Guitar (clean).
 
 `mutedGuitarBlock` is the MIDI program number for muted guitar for each track, stored as a byte.
-mutedGuitarBlock seems to be unused. Older files can have non-default values for muted guitar, but there is no way to edit with the latest version of TabIt.
 
+`mutedGuitarBlock` seems to be unused. Older files can have non-default values for muted guitar, but there is no way to edit with the latest version of TabIt.
 
 `volumeBlock` is the volume for each track, stored as a byte.
 
@@ -508,29 +508,31 @@ mutedGuitarBlock seems to be unused. Older files can have non-default values for
 
 `highestNoteBlock` is the highest allowed note for each track, stored as a byte.
 
-`displayMIDINoteNumbersBlock` controls whether to display MIDI note numbers for each track, stored as a byte.
+`displayMIDINoteNumbersBlock` indicates whether to display MIDI note numbers for each track, stored as a byte.
 
 `midiChannelBlock` is the MIDI channel for each track, stored as a byte.
 
-`midiChannel` can be -1, which means "Automatically assign", or can be: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 (Drums), 11, 12, 13, 14, 15, 16.
+MIDI channel can be -1 (0xff), which means "Automatically assign", or can be: 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 (Drums), 10, 11, 12, 13, 14, 15.
 
-`topLineTextBlock` controls whether there is text at the top of each track, stored as a byte.
+`topLineTextBlock` indicates whether there is text at the top of each track, stored as a byte.
 
-`bottomLineTextBlock` controls whether there is text at the bottom of each track, stored as a byte.
+`bottomLineTextBlock` indicates whether there is text at the bottom of each track, stored as a byte.
 
 `tuningBlock` is the difference in standard tuning for each string for each track, stored as a byte.
 
-`drumBlock` controls whether the track is a drum track for each track, stored as a byte.
+Tuning values may be negative or positive.
 
-`title` is the title of the song.
+`drumBlock` indicates whether each track is a drum track, stored as a byte.
 
-`artist` is who wrote or created the song.
+`title` is the title of the song, stored as a Pascal2 string.
 
-`album` is the album that the song was on.
+`artist` is who wrote or created the song, stored as a Pascal2 string.
 
-`transcribedBy` is who transcribed the song into TabIt.
+`album` is the album that the song was on, stored as a Pascal2 string.
 
-`comment` is a text field for comments such as lyrics.
+`transcribedBy` is who transcribed the song into TabIt, stored as a Pascal2 string.
+
+`comment` is a text field for comments such as lyrics, stored as a Pascal2 string.
 
 
 
@@ -544,8 +546,8 @@ The body has this sequence of parts:
 
 1. Bars
 1. Notes
-1. Alternate time regions (optional)
-1. Track effect changes (optional)
+1. Alternate Time Regions (optional)
+1. Track Effect Changes (optional)
 
 
 ### Bars
@@ -568,7 +570,7 @@ Alternate time regions are specified per-track and are made to match the spaces 
 
 #### 0x70 and newer
 
-For version `0x70` and newer, `bars` is an array list of 6 byte records with this structure:
+For version `0x70` and newer, `bars` is an ArrayList of 6 byte records with this structure:
 
 `s3 s2 s1 s0 c v`
 
@@ -582,7 +584,7 @@ The bytes `s3 s2 s1 s0` are an int that specifies how many spaces to increment a
 0b00000100 = close repeat at end of bar
 ```
 
-And if there is a close repeat at end of bar, then `v` specifies the number of repeats.
+And if there is a close repeat at the end of the bar, then `v` specifies the number of repeats.
 
 The number of spaces in `barsStruct` can be used as the "plain" number of spaces for the song, with no alternate time regions.
 
@@ -590,17 +592,17 @@ The number of spaces in `barsStruct` can be used as the "plain" number of spaces
 
 #### 0x6f and older
 
-For version `0x6f` and older, `bars` is a chunk2.
+For version `0x6f` and older, `bars` is a Chunk2.
 
-After reading the chunk2, there is a delta list that is iterated through.
+After reading the Chunk2, there is a DeltaList that is iterated through.
 
-Each byte in the expanded delta list corresponds to a space and is bit-masked with these values do determine which bar lines to make.
+Each byte in the expanded DeltaList corresponds to a space and is bit-masked with these values do determine which bar lines to make:
 ```
 0x00001111 = determines which change to make
 0x11110000 = when inserting end repeat, specifies how many repeats
 ```
 
-After bitmasking with `0x00001111`, the value determines which bar lines to make.
+After bitmasking with `0x00001111`, the value determines which bar lines to make:
 ```
 0 = skip
 1 = insert single bar line
@@ -621,7 +623,7 @@ It is as if each space has only 1 slot, so no need to compute it.
 
 ### Notes
 
-For each track, notes are stored in a sequence of chunk2s, and can be read with this pseudo-code:
+For each track, Notes are stored in a sequence of Chunk2s, and can be read with this pseudo-code:
 ```
 noteList = new list
 while True:
@@ -632,17 +634,15 @@ while True:
     break
 ```
 
-After a complete note list is created, then this is a delta list that is iterated through.
+After a complete Notes list is created, then this is a DeltaList that is iterated through.
 
-Each byte in the expanded delta list corresponds to a value for the current vsq index.
+Each byte in the expanded DeltaList corresponds to a value for the current `vsq`.
 
-The current slot is computed by `vsqIndex % 20`.
+#### vsqs `0 to 7 % 20`
 
-#### Slots 0 to 7
+Note values for strings in this space.
 
-Note values between `0x80` and `0xe3` correspond to the note values on strings.
-
-For example, value `0x80` in slot 0 means a 0 note on the low E string. A value of `0x85` in slot 1 means a 5 note on the A string.
+For example, value `0x80` at `vsq` 0 means a 0 note on the low E string. A value of `0x85` at `vsq` 1 means a 5 note on the A string.
 
 Drums may have higher numbers than the usual number of frets on guitar strings. The max note is 99, so the highest note value is `0x80` + 99 == `0xe3`.
 
@@ -652,9 +652,9 @@ A muted string plays for a 1/128 note.
 
 
 
-#### Slots 8 to 15
+#### vsqs `8 to 15 % 20`
 
-These are effects for each string. Slot 8 is the effects for string 0, slot 9 is the effects for string 1, etc.
+These are effects for each string. Vsq 8 is the effects for string 0, vsq 9 is the effects for string 1, etc.
 
 The effect values:
 ```
@@ -675,7 +675,7 @@ The effect values:
 0x7e ('~'): Vibrato
 ```
 
-#### Slot 16
+#### vsqs `16 % 20`
 
 These are track effects.
 
@@ -694,17 +694,17 @@ These are only set when `versionNumber <= 0x70`.
 0x74 ('t'): Tempo change + 250
 ```
 
-#### Slot 17
+#### vsqs `17 % 20`
 
 Single ASCII character for top line text
 
 
-#### Slot 18
+#### vsqs `18 % 20`
 
 Single ASCII character for bottom line text
 
 
-#### Slot 19
+#### vsqs `19 % 20`
 
 The change value for effects or track effects
 
@@ -712,11 +712,11 @@ The change value for effects or track effects
 
 ### Alternate Time Regions
 
-`featureBitfield` from header should be bit-masked with `0b00010000` to determine if there are alternate time regions.
+`featureBitfield` from the header should be bit-masked with `0b00010000` to determine if there are Alternate Time Regions.
 
 If not, then skip this section.
 
-For each track, Alternate Time Regions are stored in a sequence of chunk2s, and can be read with this pseudo-code:
+For each track, Alternate Time Regions are stored in a sequence of Chunk2s, and can be read with this pseudo-code:
 ```
 alternateTimeRegionList = new list
 while True:
@@ -727,17 +727,18 @@ while True:
     break
 ```
 
-After a complete alternate time region list is created, then this is a delta list that is iterated through.
+After a complete Alternate Time Region list is created, then this is a DeltaList that is iterated through.
 
-Each byte in the expanded delta list corresponds to a value for the current vsq index.
+Each byte in the expanded DeltaList corresponds to a value for the current `dsq`.
 
-The current slot is computed by `vsqIndex % 2`.
+#### dsqs `0 % 2`
 
-For slot 0:
-This is the denominator. For triplets, this is 2.
+The denominator of the Alternate Time Region for this space. For example, for triplets, this is 2.
 
-For slot 1:
-This is the numerator. For triplets, this is 3.
+
+#### dsqs `1 % 2`
+
+The numerator of the Alternate Time Region for this space. For example, for triplets, this is 3.
 
 
 
@@ -745,9 +746,9 @@ This is the numerator. For triplets, this is 3.
 
 If `versionNumber` is `0x70` or below, then skip this section.
 
-For each track, Track Effect Changes are stored as a chunk4.
+For each track, Track Effect Changes are stored as a Chunk4.
 
-After reading the chunk4, there is an array list that is iterated through.
+After reading the Chunk4, there is an ArrayList that is iterated through.
 
 Each entry in the list is an 8 byte structure:
 `s1 s0 e1 e0 r1 r0 v1 v0`
@@ -786,13 +787,15 @@ Track Effects are numbered:
 
 Since I have a copy of TabIt and I can run it, then an easy approach is to save different files while changing only 1 thing and see what the difference is.
 
-For example, putting the notes `012345` on low E string, then putting the notes `012345` on the A string, and seeing how the files differ.
+For example, putting the notes `012345` on low E string, then putting the notes `012345` on the A string, and then seeing how the files differ.
 
 Change the tempo, then resave, and see how the files differ.
 
 etc.
 
-It will take a lot of work!
+Slowly but surely, knowledge will be built about the structure and layout of the file format.
+
+It took a LOT of work and I learned a lot about reverse engineering in the process.
 
 
 
@@ -819,6 +822,7 @@ https://tstillz.medium.com/basic-static-analysis-part-1-9c24497790b6
 
 
 
+ <p xmlns:cc="http://creativecommons.org/ns#" xmlns:dct="http://purl.org/dc/terms/"><a property="dct:title" rel="cc:attributionURL" href="https://bostick.github.io/tabit-file-format/description/tabit-file-format-description.html">Description of the .tbt TabIt file format</a> by <a rel="cc:attributionURL dct:creator" property="cc:attributionName" href="https://bostick.github.io">Brenton Bostick</a> is licensed under <a href="http://creativecommons.org/licenses/by-sa/4.0/?ref=chooser-v1" target="_blank" rel="license noopener noreferrer" style="display:inline-block;">CC BY-SA 4.0<img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/cc.svg?ref=chooser-v1"><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/by.svg?ref=chooser-v1"><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/sa.svg?ref=chooser-v1"></a></p> 
 
 
 
