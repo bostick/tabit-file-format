@@ -1,7 +1,7 @@
 
 # The .tbt TabIt file format
 
-TabIt is a Windows application that is described in its website [^1] as
+TabIt is a Windows application that is described in its [website](http://www.tabit.net) as
 
 > a full-featured program for creating, playing, and printing guitar, bass, or banjo tablature.
 
@@ -24,6 +24,4 @@ The latest version of TabIt, version 2.03, was released in 2006.
 I will be adding more tools such as .tbt file parsers for various languages.
 
 
-## References
 
-[^1]: [http://www.tabit.net/](http://www.tabit.net/)

@@ -194,6 +194,8 @@ Each track may have up to 8 strings.
 
 The highest note on each string may be 99.
 
+Tempo must be betwwen 30 BPM and 500 BPM.
+
 
 
 ## Data structures and endianness
@@ -370,7 +372,7 @@ The `magic` bytes for .tbt files are `0x54 0x42 0x54` which are ASCII values for
 
 The `versionNumber` byte is a value such as `0x6f` or `0x72`.
 
-If the tempo of the song is less than `250`, then `tempo1` is set to that value.
+`tempo1` is the tempo of the song, but only if the tempo of the song is less than `250`.
 
 The `trackCount` is the number of tracks in the song.
 
@@ -399,7 +401,7 @@ If `versionNumber == 0x6f`, `spaceCount6f` is the number of spaces in the song.
 
 If `versionNumber <= 0x6f`, `lastNonEmptySpaceLE6f` is the last non-empty space in the song.
 
-`tempo2` is the tempo of the song.
+`tempo2` is the actual tempo of the song.
 
 `metadataLen` is the length of the metadata.
 
@@ -480,7 +482,7 @@ Use bit mask `0b01111111` to determine the MIDI program number.
 
 If Dont Let Notes Ring flag is `1`, then each string rings until the next event on ANY string.
 
-If Dont Let Notes Ring flag is `0`, then each string rings independently until the next event on THAT string.
+If Dont Let Notes Ring flag is `0`, then each string rings independently until the next event on THAT string, like a real guitar.
 
 The MIDI program number is something like 27 for Electric Guitar (clean).
 
@@ -753,13 +755,13 @@ After reading the Chunk4, there is an ArrayList that is iterated through.
 Each entry in the list is an 8 byte structure:
 `s1 s0 e1 e0 r1 r0 v1 v0`
 
-`s1 s0` is a short that specifies how many spaces to increment after this word.
+`s1 s0` is a short that specifies how many spaces to increment before this change.
 
 `e1 e0` is a short that specifies the effect to change.
 
-`r1 r0` is a short and reserved and always 0.
+`r1 r0` is a short and reserved and is always 0.
 
-`v1 v0` is a short that is the value of the effect change.
+`v1 v0` is a short that is the value of the change.
 
 
 Track Effects are numbered:

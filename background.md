@@ -1,7 +1,7 @@
 
 # TabIt Background
 
-This document describes the background of TabIt, a Windows application that is described in its website [^1] as
+This document describes the background of TabIt, a Windows application that is described in its [website](http://www.tabit.net) as
 
 > a full-featured program for creating, playing, and printing guitar, bass, or banjo tablature.
 
@@ -16,7 +16,7 @@ TabIt is sold by GTAB Software, and I believe that company to be run by 1 person
 
 There is a semi-active TabIt [subreddit](https://reddit.com/r/tabit/).
 
-(Tablature Area)[https://tabarea.net/] is a mirror of the tabs from tabit.net.
+[Tablature Area](https://tabarea.net/) is a mirror of the tabs from tabit.net.
 
 
 ## The Crisis
@@ -66,14 +66,6 @@ And since at least June 2021:
 * [2.02](https://web.archive.org/web/20060925180247/http://www.tabit.net/download.htm)
 
 * [2.03](https://web.archive.org/web/20070727152913/http://www.tabit.net/download.htm)
-
-
-
-## References
-
-[^1]: [http://www.tabit.net/](http://www.tabit.net/)
-
-
 
 
 
