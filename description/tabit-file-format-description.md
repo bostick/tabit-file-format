@@ -3,13 +3,13 @@
 
 ## Overview
 
-This document describes the format for .tbt files that are opened and saved by TabIt, a Windows application that is described in its website [^1] as
+This document describes the format for .tbt files that are opened and saved by TabIt, a Windows application that is described in its [website](http://www.tabit.net) as
 
 > a full-featured program for creating, playing, and printing guitar, bass, or banjo tablature.
 
 TabIt is effectively abandonware.
 
-The latest version of TabIt, version 2.03, was released in 2006 and was used as a reference for the reverse-engineering work.
+The latest version of TabIt, version 2.03, was released in 2006 and was used as a reference for this work.
 
 The format description was reverse-engineered and this document is not an official specification.
 
@@ -814,15 +814,6 @@ https://tstillz.medium.com/basic-static-analysis-part-1-9c24497790b6
 -->
 
 
-
-
-## References
-
-[^1]: [http://www.tabit.net/](http://www.tabit.net/)
-
-
-
-## Copyright
 
  <p xmlns:cc="http://creativecommons.org/ns#" xmlns:dct="http://purl.org/dc/terms/"><a property="dct:title" rel="cc:attributionURL" href="https://bostick.github.io/tabit-file-format/description/tabit-file-format-description.html">Description of the .tbt TabIt file format</a> by <a rel="cc:attributionURL dct:creator" property="cc:attributionName" href="https://bostick.github.io">Brenton Bostick</a> is licensed under <a href="http://creativecommons.org/licenses/by-sa/4.0/?ref=chooser-v1" target="_blank" rel="license noopener noreferrer" style="display:inline-block;">CC BY-SA 4.0<img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/cc.svg?ref=chooser-v1"><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/by.svg?ref=chooser-v1"><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/sa.svg?ref=chooser-v1"></a></p> 
 
