@@ -7,9 +7,11 @@ This document describes the format for .tbt files that are opened and saved by T
 
 > a full-featured program for creating, playing, and printing guitar, bass, or banjo tablature.
 
+The latest version of TabIt, version 2.03, was released in 2006.
+
 TabIt is effectively abandonware.
 
-The latest version of TabIt, version 2.03, was released in 2006 and was used as a reference for this work.
+Version 2.03 was used as a reference for this work.
 
 The format description was reverse-engineered and this document is not an official specification.
 

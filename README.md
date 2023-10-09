@@ -5,9 +5,9 @@ TabIt is a Windows application that is described in its [website](http://www.tab
 
 > a full-featured program for creating, playing, and printing guitar, bass, or banjo tablature.
 
-TabIt is effectively abandonware.
-
 The latest version of TabIt, version 2.03, was released in 2006.
+
+TabIt is effectively abandonware.
 
 
 [Description of the .tbt Tabit file format](description/tabit-file-format-description.md)

@@ -5,9 +5,9 @@ This document describes the background of TabIt, a Windows application that is d
 
 > a full-featured program for creating, playing, and printing guitar, bass, or banjo tablature.
 
-TabIt is effectively abandonware.
-
 The latest version of TabIt, version 2.03, was released in 2006.
+
+TabIt is effectively abandonware.
 
 TabIt is sold by GTAB Software, and I believe that company to be run by 1 person: Jordan Russell.
 
