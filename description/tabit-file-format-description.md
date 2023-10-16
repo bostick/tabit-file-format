@@ -29,7 +29,7 @@ Thank you JR.
 
 ## Example: Twinkle Twinkle Little Star
 
-Here is a disection of an example file of Twinkle Twinkle Little Star.
+Here is a dissection of an example file of Twinkle Twinkle Little Star.
 
 ![twinkle](twinkle.png)
 
@@ -196,7 +196,9 @@ Each track may have up to 8 strings.
 
 The highest note on each string may be 99.
 
-Tempo must be betwwen 30 BPM and 500 BPM.
+Tempo must be between 30 BPM and 500 BPM.
+
+Pitch bends can be between -2400 and 2400 cents (-24 and 24 semitones).
 
 
 
@@ -222,11 +224,11 @@ Pascal2 strings store their length as a short.
 
 A chunk is a blob of binary data that stores its length first.
 
-There are Chunk2s and Chunk4s.
+There are DeltaListChunks and Chunk4s.
 
-Chunk2s store their length as a short and it signifies how many shorts to read.
+DeltaListChunks store their length as a short and it signifies how many PAIRS of bytes to read.
 
-This is important: the number of bytes to read in a Chunk2 is TWO TIMES the length stored at the beginning.
+This is important: the number of bytes to read in a DeltaListChunk is TWO TIMES the length stored at the beginning.
 
 Chunk4s store their length as an int and it signifies how many bytes to read.
 
@@ -498,7 +500,11 @@ The MIDI program number is something like 27 for Electric Guitar (clean).
 
 `pitchBendBlock` is the pitch bend effect for each track, stored as a short.
 
+Pitch bend values may be positive or negative.
+
 `transposeHalfStepsBlock` is the number of half-steps to transpose for each track, stored as a byte.
+
+Transpose half step values may be positive or negative.
 
 `midiBankBlock` is the MIDI bank number to use for each track, stored as a byte.
 
@@ -556,6 +562,8 @@ The body has this sequence of parts:
 
 ### Bars
 
+Bars act as if they are between spaces.
+
 Bars are stored differently depending on the version:
 ```
 if 0x70 <= versionNumber:
@@ -581,14 +589,26 @@ For version `0x70` and newer, `bars` is an ArrayList of 6 byte records with this
 The bytes `s3 s2 s1 s0` are an int that specifies how many spaces to increment after this bar.
 
 `c` is a byte that is bit-masked with these values do determine which bar lines to make.
+
+Bit-masking `c` with `0x00000001` determines single or double bar line:
 ```
-0b00000000 = single bar line at beginning of bar
-0b00000001 = double bar line at beginning of bar
-0b00000010 = open repeat at beginning of bar
-0b00000100 = close repeat at end of bar
+0b00000000 = insert single bar line between PREVIOUS and CURRENT spaces
+0b00000001 = insert double bar line between PREVIOUS and CURRENT spaces
 ```
 
-And if there is a close repeat at the end of the bar, then `v` specifies the number of repeats.
+Bit-masking `c` with `0x00000010` determines open repeat:
+```
+0b00000010 = insert open repeat between PREVIOUS and CURRENT spaces
+```
+
+Bit-masking `c` with `0x00000100` determines close repeat:
+```
+0b00000100 = insert close repeat at NEXT bar line
+```
+
+`c` may have multiple bits set. For example, if `c` is `0b00000110`, then that means insert an open repeat AND insert a close repeat.
+
+If `c` is an open repeat, then `v` specifies the number of repeats.
 
 The number of spaces in `barsStruct` can be used as the "plain" number of spaces for the song, with no alternate time regions.
 
@@ -596,42 +616,42 @@ The number of spaces in `barsStruct` can be used as the "plain" number of spaces
 
 #### 0x6f and older
 
-For version `0x6f` and older, `bars` is a Chunk2.
+For version `0x6f` and older, Bars are stored in a sequence of DeltaListChunks, and can be read with this pseudo-code:
+```
+barList = new list
+while True:
+  chunk = read(deltaListChunk)
+  barList.append(chunk)
+  sqCount = countSQ(barList)
+  if sqCount == spaceCount:
+    break
+```
 
-After reading the Chunk2, there is a DeltaList that is iterated through.
+After a complete Bars list is created, then this is a DeltaList that is iterated through.
 
-Each byte in the expanded DeltaList corresponds to a space and is bit-masked with these values do determine which bar lines to make:
+Each byte in the expanded DeltaList corresponds to a space and is bit-masked with these values to determine which bar lines to make:
 ```
 0x00001111 = determines which change to make
-0x11110000 = when inserting end repeat, specifies how many repeats
+0x11110000 = when inserting close repeat, specifies how many repeats
 ```
 
 After bitmasking with `0x00001111`, the value determines which bar lines to make:
 ```
 0 = skip
-1 = insert single bar line
-2 = insert end repeat
-3 = insert start repeat
-4 = insert double bar line
+1 = insert single bar line between CURRENT and NEXT spaces
+2 = insert close repeat between CURRENT and NEXT spaces
+3 = insert open repeat between PREVIOUS and CURRENT spaces
+4 = insert double bar line between CURRENT and NEXT spaces
 ```
-
-Single bar line is inserted between CURRENT and NEXT spaces.
-
-Open repeat is inserted between PREVIOUS and CURRENT spaces.
-
-Close repeat is inserted between CURRENT and NEXT spaces.
-
-It is as if each space has only 1 slot, so no need to compute it.
-
 
 
 ### Notes
 
-For each track, Notes are stored in a sequence of Chunk2s, and can be read with this pseudo-code:
+For each track, Notes are stored in a sequence of DeltaListChunks, and can be read with this pseudo-code:
 ```
 noteList = new list
 while True:
-  chunk = read(chunk2)
+  chunk = read(deltaListChunk)
   noteList.append(chunk)
   vsqCount = countVSQ(noteList)
   if vsqCount == 20 * spaceCount:
@@ -642,27 +662,28 @@ After a complete Notes list is created, then this is a DeltaList that is iterate
 
 Each byte in the expanded DeltaList corresponds to a value for the current `vsq`.
 
-#### vsqs `0 to 7 % 20`
+The current slot can be computed with `vsq % 20`.
+
+#### Slots 0 to 7
 
 Note values for strings in this space.
 
-For example, value `0x80` at `vsq` 0 means a 0 note on the low E string. A value of `0x85` at `vsq` 1 means a 5 note on the A string.
+For example, value `0x80` at slot 0 means a 0 note on the low E string. A value of `0x85` at slot 1 means a 5 note on the A string.
 
 Drums may have higher numbers than the usual number of frets on guitar strings. The max note is 99, so the highest note value is `0x80` + 99 == `0xe3`.
 
 Besides note values, `0x11` is used for mute string (shown as `x` in TabIt) and `0x12` for stop string (shown as `*` in TabIt).
 
-A muted string plays for a 1/128 note.
+A muted string plays for a 1/64 of a second using the current instrument, or until the next event on that string.
 
 
 
-#### vsqs `8 to 15 % 20`
+#### Slots 8 to 15
 
-These are effects for each string. Vsq 8 is the effects for string 0, vsq 9 is the effects for string 1, etc.
+Effects for each string. Slot 8 is the effect for string 0 (E), Slot 9 is the effect for string 1 (A), etc.
 
-The effect values:
 ```
-0x00: Skip (no effect)
+0x00: Skip (no string effect)
 0x28 ('('): Soft
 0x2f ('/'): Slide up
 0x3c ('<'): Harmonic
@@ -679,14 +700,14 @@ The effect values:
 0x7e ('~'): Vibrato
 ```
 
-#### vsqs `16 % 20`
+#### Slot 16
 
-These are track effects.
+Effects for the entire track.
 
 These are only set when `versionNumber <= 0x70`.
 
 ```
-0x00: Skip (no effect)
+0x00: Skip (no track effect)
 0x43 ('C'): Chorus change
 0x44 ('D'): Stroke down
 0x49 ('I'): Instrument change
@@ -698,19 +719,22 @@ These are only set when `versionNumber <= 0x70`.
 0x74 ('t'): Tempo change + 250
 ```
 
-#### vsqs `17 % 20`
+
+#### Slot 17
 
 Single ASCII character for top line text
 
 
-#### vsqs `18 % 20`
+#### Slot 18
 
 Single ASCII character for bottom line text
 
 
-#### vsqs `19 % 20`
+#### Slot 19
 
-The change value for effects or track effects
+The change value for track effects.
+
+For Instrument changes, use bit mask `0b10000000` to determine the new Dont Let Notes Ring flag and use bit mask `0b01111111` to determine the new MIDI program number.
 
 
 
@@ -720,11 +744,11 @@ The change value for effects or track effects
 
 If not, then skip this section.
 
-For each track, Alternate Time Regions are stored in a sequence of Chunk2s, and can be read with this pseudo-code:
+For each track, Alternate Time Regions are stored in a sequence of DeltaListChunks, and can be read with this pseudo-code:
 ```
 alternateTimeRegionList = new list
 while True:
-  chunk = read(chunk2)
+  chunk = read(deltaListChunk)
   noteList.append(chunk)
   dsqCount = countDSQ(noteList)
   if dsqCount == 2 * spaceCount:
@@ -735,12 +759,14 @@ After a complete Alternate Time Region list is created, then this is a DeltaList
 
 Each byte in the expanded DeltaList corresponds to a value for the current `dsq`.
 
-#### dsqs `0 % 2`
+The current slot can be computed with `dsq % 2`.
+
+#### Slot 0
 
 The denominator of the Alternate Time Region for this space. For example, for triplets, this is 2.
 
 
-#### dsqs `1 % 2`
+#### Slot 1
 
 The numerator of the Alternate Time Region for this space. For example, for triplets, this is 3.
 
@@ -761,7 +787,7 @@ Each entry in the list is an 8 byte structure:
 
 `e1 e0` is a short that specifies the effect to change.
 
-`r1 r0` is a short and reserved and is always 0.
+`r1 r0` is a short and reserved and is always `0x02`.
 
 `v1 v0` is a short that is the value of the change.
 
@@ -780,6 +806,9 @@ Track Effects are numbered:
 10 = Pitch bend
 ```
 
+For Instrument changes, `v1` is the new MIDI bank and `v0` is the combination of Dont Let Notes Ring flag and new MIDI program number.
+
+Use bit mask `0b10000000` to determine the Dont Let Notes Ring flag and use bit mask `0b01111111` to determine the new MIDI program number.
 
 
 <!--

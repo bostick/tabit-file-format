@@ -127,11 +127,11 @@ c k   1                             63 6b 20 31
 . . [ .                                00 b0 5b 00 ; reverb control change
 . . ] .                                00 b0 5d 00 ; chorus control change
 . . . .                                00 b0 01 00 ; modulation control change
-. . e .                                00 b0 65 00 ; control change
-. . d .                                00 b0 64 00 ; control change
-. . . .                                00 b0 06 18 ; control change
-. . & .                                00 b0 26 00 ; control change
-. . . @                                00 e0 00 40 ; pitch wheel change
+. . e .                                00 b0 65 00 ; control change RPN Parameter MSB, RPN 0 is standardized as Pitch bend range
+. . d .                                00 b0 64 00 ; control change RPN Parameter LSB
+. . . .                                00 b0 06 18 ; control change Data Entry MSB, 0x18 == 24 semi-tones
+. . & .                                00 b0 26 00 ; control change Data Entry LSB, 0x00 == 0 cents
+. . . @                                00 e0 00 40 ; pitch wheel change, combine7bit(0x00, 0x40) == 8192
 . . 0 `                                00 90 30 60 ; note on
 . @ . 0 .                           81 40 80 30 00 ; note off
 . . 0 `                                00 90 30 60 ; note on
