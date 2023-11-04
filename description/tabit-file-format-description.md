@@ -178,7 +178,7 @@ Version `0x6d` added "transpose half steps" and MIDI bank, and album and transcr
 
 Version `0x6f` increased the number of allowed spaces from 4000 to 32000.
 
-Version `0x70` added alternate time regions.
+Version `0x70` added Alternate Time Regions.
 
 Version `0x71` added added modulation, pitch bend, multiple changes at same time.
 
@@ -572,12 +572,12 @@ else:
   bars = read(chunk2)
 ```
 
-The spaces being processed by bars do not have any knowledge of alternate time regions.
+The spaces being processed by bars do not have any knowledge of Alternate Time Regions.
 
-The spaces in bars are as if there are NO alternate time regions.
+The spaces in bars are as if there are NO Alternate Time Regions.
 
 
-Alternate time regions are specified per-track and are made to match the spaces in bars.
+Alternate Time Regions are specified per-track and are made to match the spaces in bars.
 
 
 #### 0x70 and newer
@@ -610,7 +610,7 @@ Bit-masking `c` with `0x00000100` determines close repeat:
 
 If `c` is a close repeat, then `v` specifies the number of repeats.
 
-The number of spaces in `barsStruct` can be used as the "plain" number of spaces for the song, with no alternate time regions.
+The number of spaces in `barsStruct` can be used as the "plain" number of spaces for the song, with no Alternate Time Regions.
 
 
 
@@ -631,7 +631,7 @@ After a complete Bars list is created, then this is a DeltaList that is iterated
 
 Each byte in the expanded DeltaList corresponds to a space and is bit-masked with these values to determine which bar lines to make:
 ```
-0x00001111 = specified which change to make
+0x00001111 = specifies which change to make
 0x11110000 = specifies how many repeats
 ```
 
