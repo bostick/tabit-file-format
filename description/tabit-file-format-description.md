@@ -390,13 +390,13 @@ The `trackCount` is the number of tracks in the song.
       2: always set, purpose unknown
      4: seems to only be present in 0x6f files, does not survive being resaved
     8: always set, possibly related to having metadata
-   10: has alternate time regions
+   10: has Alternate Time Regions
   20: unused
  40: unused
 80: unused
 ```
 
-`featureBitfield` is usually `0b00001011`, but may be `0b00011011`, depending on whether there are alternate time regions.
+`featureBitfield` is usually `0b00001011`, but may be `0b00011011`, depending on whether there are Alternate Time Regions.
 
 
 If `versionNumber <= 0x70`, `barCountGE70` is the number of bars in the song.
@@ -582,7 +582,7 @@ Alternate time regions are specified per-track and are made to match the spaces 
 
 #### 0x70 and newer
 
-For version `0x70` and newer, `bars` is an ArrayList of 6 byte records with this structure:
+For version `0x70` and newer, Bars is an ArrayList of 6 byte records with this structure:
 
 `s3 s2 s1 s0 c v`
 
@@ -608,7 +608,7 @@ Bit-masking `c` with `0x00000100` determines close repeat:
 
 `c` may have multiple bits set. For example, if `c` is `0b00000110`, then that means insert an open repeat AND insert a close repeat.
 
-If `c` is an open repeat, then `v` specifies the number of repeats.
+If `c` is a close repeat, then `v` specifies the number of repeats.
 
 The number of spaces in `barsStruct` can be used as the "plain" number of spaces for the song, with no alternate time regions.
 
@@ -631,8 +631,8 @@ After a complete Bars list is created, then this is a DeltaList that is iterated
 
 Each byte in the expanded DeltaList corresponds to a space and is bit-masked with these values to determine which bar lines to make:
 ```
-0x00001111 = determines which change to make
-0x11110000 = when inserting close repeat, specifies how many repeats
+0x00001111 = specified which change to make
+0x11110000 = specifies how many repeats
 ```
 
 After bitmasking with `0x00001111`, the value determines which bar lines to make:
@@ -643,6 +643,8 @@ After bitmasking with `0x00001111`, the value determines which bar lines to make
 3 = insert open repeat between PREVIOUS and CURRENT spaces
 4 = insert double bar line between CURRENT and NEXT spaces
 ```
+
+When inserting a close repeat, use `0x11110000` to determine how many repeats.
 
 
 ### Notes
