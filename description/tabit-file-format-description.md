@@ -3,15 +3,21 @@
 
 ## Overview
 
-This document describes the format for .tbt files that are opened and saved by TabIt, a Windows application that is described in its [website](http://www.tabit.net) as
+This document describes the format for .tbt files that are opened and saved by TabIt, a Windows application that is described on its [website](http://www.tabit.net) as
 
 > a full-featured program for creating, playing, and printing guitar, bass, or banjo tablature.
+
+TabIt is sold by GTAB Software.
 
 The latest version of TabIt, version 2.03, was released in 2006.
 
 TabIt is effectively abandonware.
 
 Version 2.03 was used as a reference for this work.
+
+Only files produced by this version are discussed.
+
+For earlier versions, [tbt-parser](https://github.com/bostick/tbt-parser/) does handle all known versions of TabIt, but no effort is made to document these versions.
 
 The format description was reverse-engineered and this document is not an official specification.
 
@@ -139,50 +145,6 @@ Incrementing through slots is measured in "vsqs" which is short for "viginti-sem
 For example, the A string and D string are next to each other and when incrementing from a note on the A string to a note on the D string, the increment is 1 vsq.
 
 In other situations, it is necessary to sub-divide a space into only 2 parts, and these parts are called "dsqs", which is short for "demi-semi-quaver" which means = 1/2 of 1/16th notes.
-
-
-## Versions
-
-Different versions of TabIt may save to the same file format version.
-
-This document deals with version numbers encoded in .tbt files and does not talk about versions of the TabIt product itself.
-
-Relatedly, TabIt files store both a version number and a version string.
-
-The version string may be the same for different version numbers.
-
-To be completely accurate, this document will refer to version numbers only.
-
-Files stored with version number `0x68` store version string "1.22".
-
-Files stored with version number `0x6e` store version string "1.55".
-
-Files stored with version number `0x6f` store version string "1.6".
-
-Files stored with version number `0x70` store version string "2.0".
-
-Files stored with version number `0x71` store version string "2.0".
-
-Files stored with version number `0x72` store version string "2.0".
-
-The version strings correspond roughly to released versions of TabIt.
-
-
-Version `0x6a` added "display MIDI note numbers" and MIDI channel.
-
-Version `0x6b` increased the number of allowed strings to 8, and added pan and highest note.
-
-Version `0x6c` added reverb and chorus.
-
-Version `0x6d` added "transpose half steps" and MIDI bank, and album and transcribedBy.
-
-Version `0x6f` increased the number of allowed spaces from 4000 to 32000.
-
-Version `0x70` added Alternate Time Regions.
-
-Version `0x71` added added modulation, pitch bend, multiple changes at same time.
-
-Note that `0x71` is "unstable", which means that resaving `0x71` files saves them as `0x72` files.
 
 
 
@@ -364,7 +326,7 @@ The first 64 bytes of a .tbt file is the header.
 0x0c: unused (28 bytes)
 0x28: barCountGE70: short
 0x2a: spaceCount6f: short
-0x2c: lastNonEmptySpaceLE6f: short
+0x2c: lastNonEmptySpace: short
 0x2e: tempo2: short
 0x30: metadataLen: int
 0x34: crc32Body: int
@@ -376,7 +338,7 @@ The `magic` bytes for .tbt files are `0x54 0x42 0x54` which are ASCII values for
 
 The `versionNumber` byte is a value such as `0x6f` or `0x72`.
 
-`tempo1` is the tempo of the song, but only if the tempo of the song is less than `250`.
+`tempo1` is the tempo of the song, but only stored in a byte. For the actual tempo, see `tempo2`.
 
 The `trackCount` is the number of tracks in the song.
 
@@ -385,25 +347,23 @@ The `trackCount` is the number of tracks in the song.
 `featureBitfield` sets individual bits according to certain features.
 ```
 76543210
-       ^
-       1: always set, possibly related to having string metadata
-      2: always set, purpose unknown
-     4: seems to only be present in 0x6f files, does not survive being resaved
-    8: always set, possibly related to having metadata
-   10: has Alternate Time Regions
+   ^^^^^
+       1: unknown; always set; possibly related to having string metadata
+      2: unknown; never set earlier than 0x68, sometimes set in 0x68, always set later than 0x68
+     4: unknown; seems to only be present in 0x6f files; does not survive being resaved
+    8: unknown; always set in 0x6e and later; possibly related to zlib compression for Metadata and Body
+   10: has Alternate Time Regions; only set in 0x70 and newer
   20: unused
  40: unused
 80: unused
 ```
 
-`featureBitfield` is usually `0b00001011`, but may be `0b00011011`, depending on whether there are Alternate Time Regions.
 
-
-If `versionNumber <= 0x70`, `barCountGE70` is the number of bars in the song.
+If `versionNumber >= 0x70`, `barCountGE70` is the number of bars in the song.
 
 If `versionNumber == 0x6f`, `spaceCount6f` is the number of spaces in the song.
 
-If `versionNumber <= 0x6f`, `lastNonEmptySpaceLE6f` is the last non-empty space in the song.
+If `versionNumber <= 0x6f`, `lastNonEmptySpace` is the last non-empty space in the song.
 
 `tempo2` is the actual tempo of the song.
 
@@ -437,42 +397,30 @@ if 0x71 <= versionNumber:
   modulationBlock = read(1 * trackCount)
   pitchBendBlock = read(2 * trackCount)
 
-if 0x6d <= versionNumber:
-  transposeHalfStepsBlock = read(1 * trackCount)
-  midiBankBlock = read(1 * trackCount)
+transposeHalfStepsBlock = read(1 * trackCount)
+midiBankBlock = read(1 * trackCount)
 
-if 0x6c <= versionNumber:
-  reverbBlock = read(1 * trackCount)
-  chorusBlock = read(1 * trackCount)
+reverbBlock = read(1 * trackCount)
+chorusBlock = read(1 * trackCount)
 
-if 0x6b <= versionNumber:
-  panBlock = read(1 * trackCount)
-  highestNoteBlock = read(1 * trackCount)
+panBlock = read(1 * trackCount)
+highestNoteBlock = read(1 * trackCount)
 
-if 0x6a <= versionNumber:
-  displayMIDINoteNumbersBlock = read(1 * trackCount)
-  midiChannelBlock = read(1 * trackCount)
+displayMIDINoteNumbersBlock = read(1 * trackCount)
+midiChannelBlock = read(1 * trackCount)
 
 topLineTextBlock = read(1 * trackCount)
 bottomLineTextBlock = read(1 * trackCount)
 
-if 0x6b <= versionNumber:
-  tuningBlock = read(8 * trackCount)
-else:
-  tuningBlock = read(6 * trackCount)
+tuningBlock = read(8 * trackCount)
 
 drumBlock = read(1 * trackCount)
 
-if 0x6d <= versionNumber:
-  title = read(Pascal2 string)
-  artist = read(Pascal2 string)
-  album = read(Pascal2 string)
-  transcribedBy = read(Pascal2 string)
-  comment = read(Pascal2 string)
-else:
-  title = read(Pascal2 string)
-  artist = read(Pascal2 string)
-  comment = read(Pascal2 string)
+title = read(Pascal2 string)
+artist = read(Pascal2 string)
+album = read(Pascal2 string)
+transcribedBy = read(Pascal2 string)
+comment = read(Pascal2 string)
 ```
 
 `spaceCountBlock` is the number of spaces for each track, stored as an int.
@@ -494,7 +442,7 @@ The MIDI program number is something like 27 for Electric Guitar (clean).
 
 `mutedGuitarBlock` seems to be unused. Older files can have non-default values for muted guitar, but there is no way to edit with the latest version of TabIt.
 
-`volumeBlock` is the volume for each track, stored as a byte.
+`volumeBlock` is the volume for each track, stored as a byte. A typical value is 96 (0x60).
 
 `modulationBlock` is the modulation effect for each track, stored as a byte.
 
@@ -514,9 +462,9 @@ Transpose half step values may be positive or negative.
 
 `chorusBlock` is the chorus effect for each track, stored as a byte.
 
-`panBlock` is the pan effect for each track, stored as a byte.
+`panBlock` is the pan effect for each track, stored as a byte. A typical value is 64 (0x40).
 
-`highestNoteBlock` is the highest allowed note for each track, stored as a byte.
+`highestNoteBlock` is the highest allowed note for each track, stored as a byte. Typical values are 24 (0x18) or 99 (0x63).
 
 `displayMIDINoteNumbersBlock` indicates whether to display MIDI note numbers for each track, stored as a byte.
 
@@ -565,12 +513,10 @@ The body has this sequence of parts:
 Bars act as if they are between spaces.
 
 Bars are stored differently depending on the version:
-```
-if 0x70 <= versionNumber:
-  bars = read(barCountGE70 * 6)
-else:
-  bars = read(chunk2)
-```
+
+* For version `0x70` and newer, Bars is an ArrayList of 6 byte records.
+
+* For version `0x6f` and earlier, Bars are stored in a sequence of DeltaListChunks.
 
 The spaces being processed by bars do not have any knowledge of Alternate Time Regions.
 
@@ -582,7 +528,12 @@ Alternate Time Regions are specified per-track and are made to match the spaces 
 
 #### 0x70 and newer
 
-For version `0x70` and newer, Bars is an ArrayList of 6 byte records with this structure:
+For version `0x70` and newer, Bars is an ArrayList of 6 byte records, and can be read with this pseudo-code:
+```
+bars = read(barCountGE70 * 6)
+```
+
+Each record has this structure:
 
 `s3 s2 s1 s0 c v`
 
@@ -822,9 +773,15 @@ Use bit mask `0b10000000` to determine the Dont Let Notes Ring flag and use bit 
 
 Since I have a copy of TabIt and I can run it, then an easy approach is to save different files while changing only 1 thing and see what the difference is.
 
-For example, putting the notes `012345` on low E string, then putting the notes `012345` on the A string, and then seeing how the files differ.
+For example, putting the notes `012345` on the low E string, then putting the notes `012345` on the A string, and then seeing how the files differ.
 
 Change the tempo, then resave, and see how the files differ.
+
+Change the tuning, then resave, and see how the files differ.
+
+Add a track, then resave, and see how the files differ.
+
+Add bar lines, then resave, and see how the files differ.
 
 etc.
 
