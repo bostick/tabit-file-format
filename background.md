@@ -114,9 +114,11 @@ Version `0x6f` increased the number of allowed spaces from 4000 to 32000.
 
 Version `0x70` added Alternate Time Regions.
 
-Version `0x71` added modulation, pitch bend, multiple changes at same time.
+Version `0x71` added modulation and pitch bend.
 
 Note that `0x71` is "unstable", which means that resaving `0x71` files saves them as `0x72` files.
+
+Version `0x72` added multiple changes at the same time.
 
 
 TabIt 2.03 may save files as different versions depending on the features that the file uses.
