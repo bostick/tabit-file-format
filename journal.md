@@ -375,6 +375,26 @@ there can be runs of non-0 values in notes
 
 
 
+tabit journal
+
+jan 2 2024
+
+
+thinking about the remaining, seeming corrupted, files that i have collected
+
+bug in TabIt?
+
+bug in zlib?
+
+
+
+
+
+
+
+
+
+
 
 
 
