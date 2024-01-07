@@ -324,11 +324,11 @@ The first 64 bytes of a .tbt file is the header.
 0x06: versionString (Pascal1 string)
 0x0b: featureBitfield: byte
 0x0c: unused (28 bytes)
-0x28: barCountGE70: short
-0x2a: spaceCount6f: short
+0x28: barCount: short
+0x2a: spaceCount: short
 0x2c: lastNonEmptySpace: short
 0x2e: tempo2: short
-0x30: metadataLen: int
+0x30: compressedMetadataLen: int
 0x34: crc32Body: int
 0x38: totalByteCount: int
 0x3c: crc32Header: int
@@ -337,6 +337,14 @@ The first 64 bytes of a .tbt file is the header.
 The `magic` bytes for .tbt files are `0x54 0x42 0x54` which are ASCII values for `TBT`.
 
 The `versionNumber` byte is a value such as `0x6f` or `0x72`.
+
+TabIt 2.03 may save files as different versions depending on the features that the file uses.
+
+* No special features are used: saved as version `0x6f`
+
+* Uses Alternate Time Regions: saved as version `0x70`
+
+* Uses modulation or pitch bending: saved as version `0x72`
 
 `tempo1` is the tempo of the song, but only stored in a byte. For the actual tempo, see `tempo2`.
 
@@ -359,15 +367,15 @@ The `trackCount` is the number of tracks in the song.
 ```
 
 
-If `versionNumber >= 0x70`, `barCountGE70` is the number of bars in the song.
+If `versionNumber >= 0x70`, `barCount` is the number of bars in the song.
 
-If `versionNumber == 0x6f`, `spaceCount6f` is the number of spaces in the song.
+If `versionNumber == 0x6f`, `spaceCount` is the number of spaces in the song.
 
-If `versionNumber <= 0x6f`, `lastNonEmptySpace` is the last non-empty space in the song.
+If `versionNumber == 0x6f`, `lastNonEmptySpace` is the last non-empty space in the song.
 
 `tempo2` is the actual tempo of the song.
 
-`metadataLen` is the length of the metadata.
+`compressedMetadataLen` is the length of the compressed metadata.
 
 `crc32Body` is the CRC-32 of the body.
 
@@ -381,7 +389,7 @@ If `versionNumber <= 0x6f`, `lastNonEmptySpace` is the last non-empty space in t
 
 Metadata is a zlib stream that must be inflated.
 
-Number of bytes in the metadata stream is specified with `metadataLen` in the header.
+Number of bytes in the metadata stream is specified with `compressedMetadataLen` in the header.
 
 After inflating, read the bytes according to this pseudo-code:
 ```
@@ -452,11 +460,11 @@ Pitch bend values may be positive or negative.
 
 `transposeHalfStepsBlock` is the number of half-steps to transpose for each track, stored as a byte.
 
-Transpose half step values may be positive or negative.
+Transpose Half Steps values may be positive or negative.
 
 `midiBankBlock` is the MIDI bank number to use for each track, stored as a byte.
 
-`midiBank` can range from 0 to 127.
+MIDI Bank values can range from 0 to 127.
 
 `reverbBlock` is the reverb effect for each track, stored as a byte.
 
@@ -498,7 +506,7 @@ Tuning values may be negative or positive.
 
 Body is a zlib stream that must be inflated.
 
-Number of bytes in the body stream is the number of remaining bytes in the file, which can be computed from `totalByteCount - 64 - metadataLen`.
+Number of bytes in the body stream is the number of remaining bytes in the file, which can be computed from `totalByteCount - 64 - compressedMetadataLen`.
 
 The body has this sequence of parts:
 
@@ -530,7 +538,7 @@ Alternate Time Regions are specified per-track and are made to match the spaces 
 
 For version `0x70` and newer, Bars is an ArrayList of 6 byte records, and can be read with this pseudo-code:
 ```
-bars = read(barCountGE70 * 6)
+bars = read(barCount * 6)
 ```
 
 Each record has this structure:
@@ -784,6 +792,8 @@ Add a track, then resave, and see how the files differ.
 Add bar lines, then resave, and see how the files differ.
 
 etc.
+
+Zlib are annoying to try to recognize, but luckily, TabIt always uses Best Compression and that means `0x78 0xda` starts every zlib stream.
 
 Slowly but surely, knowledge will be built about the structure and layout of the file format.
 
