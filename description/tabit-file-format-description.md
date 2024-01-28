@@ -522,7 +522,7 @@ Bars act as if they are between spaces.
 
 Bars are stored differently depending on the version:
 
-* For version `0x70` and newer, Bars is an ArrayList of 6 byte records.
+* For version `0x70` and newer, Bars are an ArrayList of 6 byte records.
 
 * For version `0x6f` and earlier, Bars are stored in a sequence of DeltaListChunks.
 
@@ -531,12 +531,12 @@ The spaces being processed by bars do not have any knowledge of Alternate Time R
 The spaces in bars are as if there are NO Alternate Time Regions.
 
 
-Alternate Time Regions are specified per-track and are made to match the spaces in bars.
+Alternate Time Regions are specified per-track and are made to match the spaces in Bars.
 
 
 #### 0x70 and newer
 
-For version `0x70` and newer, Bars is an ArrayList of 6 byte records, and can be read with this pseudo-code:
+For version `0x70` and newer, Bars are an ArrayList of 6 byte records, and can be read with this pseudo-code:
 ```
 bars = read(barCount * 6)
 ```
