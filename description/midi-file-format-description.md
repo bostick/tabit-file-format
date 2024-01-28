@@ -7,7 +7,7 @@ This description will be a little looser than the .tbt TabIt file description.
 
 
 | String | Note name | MIDI note      |
-| ------------------------------------|
+| -------|-----------|----------------|
 | e      | E4        | 64 (0x40)      |
 | B      | B3        | 59 (0x3b)      |
 | G      | G3        | 55 (0x37)      |
