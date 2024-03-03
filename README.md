@@ -14,7 +14,7 @@ TabIt is effectively abandonware.
 
 [Description of the .tbt Tabit file format](description/tabit-file-format-description.md)
 
-[A parser and MIDI converter for .tbt TabIt files](https://github.com/bostick/tbt-parser/)
+[A C++ parser and MIDI converter for .tbt TabIt files](https://github.com/bostick/tbt-parser/)
 
 
 [Description of the .mid MIDI file format](description/midi-file-format-description.md)
