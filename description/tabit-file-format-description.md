@@ -769,7 +769,13 @@ Track Effects are numbered:
 
 For Instrument changes, `v1` is the new MIDI bank and `v0` is the combination of Dont Let Notes Ring flag and new MIDI program number.
 
-Use bit mask `0b10000000` to determine the Dont Let Notes Ring flag and use bit mask `0b01111111` to determine the new MIDI program number.
+Use bit mask `0b10000000` on `v1` to determine whether there is a MIDI bank change.
+
+Use bit mask `0b01111111` on `v1` to determine the new MIDI bank.
+
+Use bit mask `0b10000000` on `v0` to determine the Dont Let Notes Ring flag.
+
+Use bit mask `0b01111111` on `v0` to determine the new MIDI program number.
 
 
 <!--
@@ -793,7 +799,7 @@ Add bar lines, then resave, and see how the files differ.
 
 etc.
 
-Zlib are annoying to try to recognize, but luckily, TabIt always uses Best Compression and that means `0x78 0xda` starts every zlib stream.
+Zlib streams are annoying to try to recognize, but luckily, TabIt always uses Best Compression and that means `0x78 0xda` starts every zlib stream.
 
 Slowly but surely, knowledge will be built about the structure and layout of the file format.
 
