@@ -510,42 +510,42 @@ Number of bytes in the body stream is the number of remaining bytes in the file,
 
 The body has this sequence of parts:
 
-1. Bars
+1. Bar lines
 1. Notes
 1. Alternate Time Regions (optional)
 1. Track Effect Changes (optional)
 
 
-### Bars
+### Bar Lines
 
-Bars act as if they are between spaces.
+Bar Lines act as if they are between spaces.
 
-Bars are stored differently depending on the version:
+Bar Lines are stored differently depending on the version:
 
-* For version `0x70` and newer, Bars are an ArrayList of 6 byte records.
+* For version `0x70` and newer, Bar Lines are an ArrayList of 6 byte records.
 
-* For version `0x6f` and earlier, Bars are stored in a sequence of DeltaListChunks.
+* For version `0x6f` and earlier, Bar Lines are stored in a sequence of DeltaListChunks.
 
-The spaces being processed by bars do not have any knowledge of Alternate Time Regions.
+The spaces being processed by Bar Lines do not have any knowledge of Alternate Time Regions.
 
-The spaces in bars are as if there are NO Alternate Time Regions.
+The spaces in Bar Lines are as if there are NO Alternate Time Regions.
 
 
-Alternate Time Regions are specified per-track and are made to match the spaces in Bars.
+Alternate Time Regions are specified per-track and are made to match the spaces in Bar Lines
 
 
 #### 0x70 and newer
 
-For version `0x70` and newer, Bars are an ArrayList of 6 byte records, and can be read with this pseudo-code:
+For version `0x70` and newer, Bar Lines are an ArrayList of 6 byte records, and can be read with this pseudo-code:
 ```
-bars = read(barCount * 6)
+barLines = read(barLineCount * 6)
 ```
 
 Each record has this structure:
 
 `s3 s2 s1 s0 c v`
 
-The bytes `s3 s2 s1 s0` are an int that specifies how many spaces to increment after this bar.
+The bytes `s3 s2 s1 s0` are an int that specifies how many spaces to increment after this bar line.
 
 `c` is a byte that is bit-masked with these values do determine which bar lines to make.
 
@@ -575,18 +575,18 @@ The number of spaces in `barsStruct` can be used as the "plain" number of spaces
 
 #### 0x6f and older
 
-For version `0x6f` and older, Bars are stored in a sequence of DeltaListChunks, and can be read with this pseudo-code:
+For version `0x6f` and older, Bar Lines are stored in a sequence of DeltaListChunks, and can be read with this pseudo-code:
 ```
-barList = new list
+barLineList = new list
 while True:
   chunk = read(deltaListChunk)
-  barList.append(chunk)
-  sqCount = countSQ(barList)
-  if sqCount == spaceCount:
+  barLineList.append(chunk)
+  sqCount = countSQ(barLineList)
+  if sqCount == 1 * spaceCount:
     break
 ```
 
-After a complete Bars list is created, then this is a DeltaList that is iterated through.
+After a complete Bar Lines list is created, then this is a DeltaList that is iterated through.
 
 Each byte in the expanded DeltaList corresponds to a space and is bit-masked with these values to determine which bar lines to make:
 ```
