@@ -162,6 +162,8 @@ Tempo must be between 30 BPM and 500 BPM.
 
 Pitch bends can be between -2400 and 2400 cents (-24 and 24 semitones).
 
+A section may repeat up to 255 times.
+
 
 
 ## Data structures and endianness
@@ -510,7 +512,7 @@ Number of bytes in the body stream is the number of remaining bytes in the file,
 
 The body has this sequence of parts:
 
-1. Bar lines
+1. Bar Lines
 1. Notes
 1. Alternate Time Regions (optional)
 1. Track Effect Changes (optional)
