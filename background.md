@@ -42,6 +42,22 @@ And since at least June 2021:
 > Tech details for those curious: The Tablature Area was built on PHP 5, which has reached end-of-life and is no longer available on modern servers. Getting it to work on PHP 7+ requires a lot of changes across the code base, mainly because they dropped the "mysql" extension (which was a very unwelcome surprise!). There may be various other PHP 7 or MySQL 8.0 incompatibilities which I haven't uncovered yet; each page will require careful re-testing before being made accessible to the public.
 
 
+UPDATE: On June 13, 2024, the [Tablature Area](www.tabit.net/tabs) is back up!
+
+> Wait, what? After a much longer than anticipated delay, the Tablature Area has returned!
+
+> There's still some more work to be done, however. Most notably, it is currently not possible to log in.
+> Consequently, functionality that requires logging in, like uploading or rating tabs, is currently unavailable.
+
+
+> 2024-08: Still at it! I actually didn't intend to go down this path at first, but lately I've been doing a lot of overdue internal reworking that would be harder/riskier to pull off with the site fully online and "writable". So, still not supporting logins yet. I don't want any potential data loss if I break things.
+
+
+> Phase 1 completed!
+
+> 2024-10: Finish line in sight. Almost have all pages working again...
+
+
 
 ## TabIt version numbers
 
