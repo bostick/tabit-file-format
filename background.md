@@ -57,6 +57,7 @@ UPDATE: On June 13, 2024, the [Tablature Area](www.tabit.net/tabs) is back up!
 
 > 2024-10: Finish line in sight. Almost have all pages working again...
 
+> 2025-02: Phase 2 completed! After upwards of 300 hours fiddling with it, got all pages working. Rewrote/updated probably half the code. (And I still have a long list of things I'd like to improve, but can't keep postposing the full relaunch indefinitely!)
 
 
 ## TabIt version numbers
